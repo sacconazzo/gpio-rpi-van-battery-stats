@@ -86,3 +86,7 @@ sudo yarn manager &
     ]
 }
 ```
+
+https://api.giona.tech/domotica/battery
+
+https://giona.tech
