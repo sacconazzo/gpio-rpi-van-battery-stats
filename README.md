@@ -35,8 +35,8 @@ long to explain... I will
 - enable serial port interface via `sudo rspi-config`
 - install this repo in your rpi home (including Python dependencies manually)
 - create database and table `battery-snaps`
-- configure .env file like .env.example
-- configure your startup script in rp (example in /etc/rc.local) adding:
+- configure `.env` file like `.env.example`
+- configure your startup script in rp (example in `/etc/rc.local`) adding:
 
 ```
 cd /{your-home}/gpio-rpi-van-battery-stats
