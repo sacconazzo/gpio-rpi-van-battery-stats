@@ -26,9 +26,7 @@
 
 long to explain... I will
 
-![breadboard connections](res/breadboard.jpg)
-
-![rpi4 connections](res/rpi4.jpg)
+<img src="res/breadboard.jpg" alt="BreadBoard conncetions" width="45%"/> <img src="res/rpi4.jpg" alt="RPI4 conncetions" width="45%"/>
 
 ### Software
 
