@@ -20,6 +20,8 @@ pot0 = PWMLED(14)
 coeffV0 = float(os.getenv("COEFF_V0"))
 coeffV1 = float(os.getenv("COEFF_V1"))
 coeffV2 = float(os.getenv("COEFF_V2"))
+coeffA1 = float(os.getenv("COEFF_A1"))
+coeffA2 = float(os.getenv("COEFF_A2"))
 
 def gpio(sc, start_time):
     pot0.value = 0.1
@@ -47,8 +49,8 @@ def gpio(sc, start_time):
     v0 = vn0 / snapshots * coeffV0
     v1 = vn1 / snapshots * coeffV1
     v2 = vn2 / snapshots * coeffV2
-    a1 = ((an1 / snapshots) - 0.5) / 2.5 * 50
-    a2 = ((an2 / snapshots) - 0.5) / 2.5 * 50
+    a1 = ((an1 / snapshots) - 0.5 ) * 100 + coeffA1
+    a2 = ((an2 / snapshots) - 0.5 ) * 100 + coeffA2
     
     print("Collected data of " + str(snapshots) + " snapshots")
     
