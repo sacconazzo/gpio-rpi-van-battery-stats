@@ -13,8 +13,8 @@ bmv = MCP3008(0)
 b1v = MCP3008(1)
 b2v = MCP3008(2)
 vol = MCP3008(3)
-b1c = MCP3008(4)
-b2c = MCP3008(5)
+b1c = MCP3008(5)
+b2c = MCP3008(6)
 pot0 = PWMLED(14)
 
 coeffV0 = float(os.getenv("COEFF_V0"))
@@ -35,14 +35,20 @@ def gpio(sc, start_time):
     vn0 = 0
     vn1 = 0
     vn2 = 0
+    an1 = 0
+    an2 = 0
     for lp in range(snapshots):
         vn0 = vn0 + bmv.value
         vn1 = vn1 + b1v.value
         vn2 = vn2 + b2v.value
+        an1 = an1 + b1c.value
+        an2 = an2 + b2c.value
         time.sleep(0.1)
     v0 = vn0 / snapshots * coeffV0
     v1 = vn1 / snapshots * coeffV1
     v2 = vn2 / snapshots * coeffV2
+    a1 = ((an1 / snapshots) - 0.5) / 2.5 * 50
+    a2 = ((an2 / snapshots) - 0.5) / 2.5 * 50
     
     print("Collected data of " + str(snapshots) + " snapshots")
     
@@ -57,7 +63,7 @@ def gpio(sc, start_time):
     mycursor = mydb.cursor()
 
     sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff) VALUES (%s, %s, %s, %s, %s, %s)"
-    values = (v0, v1, v2, b1c.value, b2c.value, interval / 60 / 60)
+    values = (v0, v1, v2, a1, a2, interval / 60 / 60)
     mycursor.execute(sql, values)
 
     mydb.commit()
