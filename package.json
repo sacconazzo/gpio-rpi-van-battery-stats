@@ -1,0 +1,20 @@
+{
+  "name": "gpio",
+  "version": "1.0.0",
+  "description": "rpi battery signals",
+  "scripts": {
+    "collect": "python3 collect.py",
+    "manager": "node manager.js",
+    "refresh": "bash ./refresh.sh"
+  },
+  "repository": "https://github.com/sacconazzo/gpio.git",
+  "author": "sacconazzo <sacconazzo@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.5",
+    "knex": "0.15.2",
+    "mysql": "^2.18.1",
+    "pigpio": "^3.3.1"
+  }
+}
