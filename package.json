@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "rpi battery signals",
   "scripts": {
-    "collect": "python3 collect.py",
-    "manager": "node manager.js",
+    "collect": "python3 src/collect.py",
+    "manager": "node src/manager.js",
     "refresh": "bash ./refresh.sh"
   },
   "repository": "https://github.com/sacconazzo/gpio.git",

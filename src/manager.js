@@ -54,8 +54,8 @@ const share = async () => {
         round(avg(bm_voltage), 2) bmV,\
         round(avg(b1_voltage), 2) b1V,\
         round(avg(b2_voltage), 2) b2V,\
-        round(sum(`b1_current` * `coeff`), 2) AS b1Ah,\
-        round(sum(`b2_current` * `coeff`), 2) AS b2Ah\
+        round(sum(`b1_current` * `coeff`), 1) AS b1Ah,\
+        round(sum(`b2_current` * `coeff`), 1) AS b2Ah\
       FROM\
         `battery-snaps`\
       WHERE\
@@ -69,8 +69,8 @@ const share = async () => {
         round(bm_voltage, 2) AS bmV,\
         round(b1_voltage, 2) AS b1V,\
         round(b2_voltage, 2) AS b2V,\
-        round(b1_current, 2) AS b1A,\
-        round(b2_current, 2) AS b2A\
+        round(b1_current, 1) AS b1A,\
+        round(b2_current, 1) AS b2A\
       FROM\
         `battery-snaps`\
       WHERE\
