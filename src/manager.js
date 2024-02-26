@@ -103,12 +103,6 @@ share();
 
 // BUTTONS
 let waitReboot;
-let waitPowerOff;
-const clearLedButtons = () => {
-  const isPressed = buttonReboot.digitalRead() || buttonShutDown.digitalRead();
-  if (!isPressed) pulsePress.digitalWrite(0);
-};
-setInterval(clearLedButtons, 100);
 buttonReboot.glitchFilter(10000);
 buttonReboot.on("interrupt", function (level) {
   if (level) {
@@ -124,6 +118,8 @@ buttonReboot.on("interrupt", function (level) {
   }
 });
 buttonShutDown.glitchFilter(10000);
+
+let waitPowerOff;
 buttonShutDown.on("interrupt", function (level) {
   if (level) {
     clearTimeout(waitPowerOff);
@@ -141,6 +137,13 @@ buttonShutDown.on("interrupt", function (level) {
   }
 });
 
+const clearLedButtons = () => {
+  const isPressed = buttonReboot.digitalRead() || buttonShutDown.digitalRead();
+  if (!isPressed) pulsePress.digitalWrite(0);
+};
+setInterval(clearLedButtons, 100);
+
+// END OF PROCESS
 const cleanupAndExit = () => {
   buttonReboot.disableInterrupt(); // Disabilita gli interrupt prima di uscire
   buttonShutDown.disableInterrupt();
