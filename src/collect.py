@@ -52,7 +52,11 @@ def gpio(sc, start_time):
     v1 = vn1 / snapshots * coeffV1
     v2 = vn2 / snapshots * coeffV2
     a1 = ((an1 / snapshots) - 0.5) * coeffA1 + offsetA1
+    if a1 >= 55 or a1 <= -55:
+      a1 = 0
     a2 = ((an2 / snapshots) - 0.5) * coeffA2 + offsetA2
+    if a2 >= 55 or a2 <= -55:
+      a2 = 0
     
     print("Collected data of " + str(snapshots) + " snapshots")
     
