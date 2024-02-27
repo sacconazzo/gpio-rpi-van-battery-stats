@@ -57,10 +57,10 @@ def gpio(sc, start_time):
     v2 = vn2 / snapshots * coeffV2
     t0 = tn0 / snapshots * coeffT0
     a1 = ((an1 / snapshots) - 0.5) * coeffA1 + offsetA1
-    if a1 >= (coeffA1 * 0.45) or a1 <= -(coeffA1 * 0.45):
+    if a1 >= (coeffA1 * 0.44) or a1 <= -(coeffA1 * 0.44):
       a1 = 0
     a2 = ((an2 / snapshots) - 0.5) * coeffA2 + offsetA2
-    if a2 >= (coeffA2 * 0.45) or a2 <= -(coeffA2 * 0.45):
+    if a2 >= (coeffA2 * 0.44) or a2 <= -(coeffA2 * 0.44):
       a2 = 0
     
     print("Collected data of " + str(snapshots) + " snapshots")
@@ -75,7 +75,7 @@ def gpio(sc, start_time):
 
     mycursor = mydb.cursor()
 
-    sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff, temperature) VALUES (%s, %s, %s, %s, %s, %s)"
+    sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff, temperature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     values = (v0, v1, v2, a1, a2, interval / 60 / 60, t0)
     mycursor.execute(sql, values)
 
