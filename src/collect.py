@@ -26,6 +26,7 @@ offsetA2 = float(os.getenv("OFFSET_A2"))
 coeffA1 = float(os.getenv("COEFF_A1"))
 coeffA2 = float(os.getenv("COEFF_A2"))
 coeffT0 = float(os.getenv("COEFF_T0"))
+offsetT0 = float(os.getenv("OFFSET_T0"))
 
 def gpio(sc, start_time):
     pot0.value = 0.1
@@ -55,7 +56,7 @@ def gpio(sc, start_time):
     v0 = vn0 / snapshots * coeffV0
     v1 = vn1 / snapshots * coeffV1
     v2 = vn2 / snapshots * coeffV2
-    t0 = tn0 / snapshots * coeffT0
+    t0 = (tn0 / snapshots * coeffT0) + offsetT0
     a1 = ((an1 / snapshots) - 0.5) * coeffA1 + offsetA1
     if a1 >= (coeffA1 * 0.44) or a1 <= -(coeffA1 * 0.44):
       a1 = 0
