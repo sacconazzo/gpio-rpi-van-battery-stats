@@ -51,7 +51,7 @@ def gpio(sc, start_time):
         vn2 = vn2 + b2v.value
         an1 = an1 + b1c.value
         an2 = an2 + b2c.value
-        tn0 = tn0 = bt0.value
+        tn0 = tn0 + bt0.value
         time.sleep(0.1)
     v0 = vn0 / snapshots * coeffV0
     v1 = vn1 / snapshots * coeffV1
