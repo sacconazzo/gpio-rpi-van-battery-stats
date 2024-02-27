@@ -4,6 +4,7 @@ import os
 
 import sched
 import time
+import math
 import mysql.connector
 import logging
 
@@ -56,14 +57,39 @@ def gpio(sc, start_time):
     v0 = vn0 / snapshots * coeffV0
     v1 = vn1 / snapshots * coeffV1
     v2 = vn2 / snapshots * coeffV2
-    t0 = (tn0 / snapshots * coeffT0) + offsetT0
+    t0 = (tn0 / snapshots)
     a1 = ((an1 / snapshots) - 0.5) * coeffA1 + offsetA1
     if a1 >= (coeffA1 * 0.44) or a1 <= -(coeffA1 * 0.44):
       a1 = 0
     a2 = ((an2 / snapshots) - 0.5) * coeffA2 + offsetA2
     if a2 >= (coeffA2 * 0.44) or a2 <= -(coeffA2 * 0.44):
       a2 = 0
+
+    # Voltage Divider
+    Vin = 3.3
+    Ro = 10000  # 10k Resistor
+
+    # Steinhart Constants
+    A = 0.001129148
+    B = 0.000234125
+    C = 0.0000000876741
+
+    Vout = 3.3 * t0
     
+    # Calculate Resistance
+    Rt = (Vout * Ro) / (Vin - Vout) 
+    # Rt = 10000  # Used for Testing. Setting Rt=10k should give TempC=25
+    
+    # Steinhart - Hart Equation
+    TempK = 1 / (A + (B * math.log(Rt)) + C * math.pow(math.log(Rt), 3))
+
+    # Convert from Kelvin to Celsius
+    TempC = TempK - 273.15
+
+    print(str(t0))
+    print(round(TempC, 1))
+    
+
     print("Collected data of " + str(snapshots) + " snapshots")
     
     mydb = mysql.connector.connect(
@@ -77,7 +103,7 @@ def gpio(sc, start_time):
     mycursor = mydb.cursor()
 
     sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff, temperature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    values = (v0, v1, v2, a1, a2, interval / 60 / 60, t0)
+    values = (v0, v1, v2, a1, a2, interval / 60 / 60, TempC)
     mycursor.execute(sql, values)
 
     mydb.commit()
