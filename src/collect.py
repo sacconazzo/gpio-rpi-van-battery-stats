@@ -26,8 +26,6 @@ offsetA1 = float(os.getenv("OFFSET_A1"))
 offsetA2 = float(os.getenv("OFFSET_A2"))
 coeffA1 = float(os.getenv("COEFF_A1"))
 coeffA2 = float(os.getenv("COEFF_A2"))
-coeffT0 = float(os.getenv("COEFF_T0"))
-offsetT0 = float(os.getenv("OFFSET_T0"))
 
 def gpio(sc, start_time):
     pot0.value = 0.1
@@ -73,22 +71,21 @@ def gpio(sc, start_time):
     A = 0.001129148
     B = 0.000234125
     C = 0.0000000876741
-
+    
     Vout = 3.3 * t0
     
     # Calculate Resistance
     Rt = (Vout * Ro) / (Vin - Vout) 
-    # Rt = 10000  # Used for Testing. Setting Rt=10k should give TempC=25
+    # Rt = 10000000  # Used for Testing. Setting Rt=10k should give TempC=25
     
     # Steinhart - Hart Equation
-    TempK = 1 / (A + (B * math.log(Rt)) + C * math.pow(math.log(Rt), 3))
+    if t0 > 0 or t0 < 1:
+      t0K = 1 / (A + (B * math.log(Rt)) + C * math.pow(math.log(Rt), 3))
+    else:
+      t0K = 273.15
 
     # Convert from Kelvin to Celsius
-    TempC = TempK - 273.15
-
-    print(str(t0))
-    print(round(TempC, 1))
-    
+    t0C = t0K - 273.15
 
     print("Collected data of " + str(snapshots) + " snapshots")
     
@@ -103,7 +100,7 @@ def gpio(sc, start_time):
     mycursor = mydb.cursor()
 
     sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff, temperature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    values = (v0, v1, v2, a1, a2, interval / 60 / 60, TempC)
+    values = (v0, v1, v2, a1, a2, interval / 60 / 60, t0C)
     mycursor.execute(sql, values)
 
     mydb.commit()
