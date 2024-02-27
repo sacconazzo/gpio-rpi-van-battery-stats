@@ -62,9 +62,9 @@ const share = async () => {
         round(max(b2_voltage), 2) b2Vmax,\
         round(sum(`b1_current` * `coeff`), 1) AS b1Ah,\
         round(sum(`b2_current` * `coeff`), 1) AS b2Ah,\
-        round(avg(temperature), 0) temp,\
-        round(min(temperature), 0) tempMin,\
-        round(max(temperature), 0) tempMax\
+        round(avg(temperature), 1) temp,\
+        round(min(temperature), 1) tempMin,\
+        round(max(temperature), 1) tempMax\
       FROM\
         `battery-snaps`\
       WHERE\
@@ -80,7 +80,7 @@ const share = async () => {
         round(b2_voltage, 2) AS b2V,\
         round(b1_current, 1) AS b1A,\
         round(b2_current, 1) AS b2A,\
-        round(temperature, 0) AS temp\
+        round(temperature, 1) AS temp\
       FROM\
         `battery-snaps`\
       WHERE\
