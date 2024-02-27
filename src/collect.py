@@ -15,6 +15,7 @@ b2v = MCP3008(2)
 vol = MCP3008(3)
 b1c = MCP3008(5)
 b2c = MCP3008(6)
+bt0 = MCP3008(7)
 pot0 = PWMLED(14)
 
 coeffV0 = float(os.getenv("COEFF_V0"))
@@ -24,6 +25,7 @@ offsetA1 = float(os.getenv("OFFSET_A1"))
 offsetA2 = float(os.getenv("OFFSET_A2"))
 coeffA1 = float(os.getenv("COEFF_A1"))
 coeffA2 = float(os.getenv("COEFF_A2"))
+coeffT0 = float(os.getenv("COEFF_T0"))
 
 def gpio(sc, start_time):
     pot0.value = 0.1
@@ -41,16 +43,19 @@ def gpio(sc, start_time):
     vn2 = 0
     an1 = 0
     an2 = 0
+    tn0 = 0
     for lp in range(snapshots):
         vn0 = vn0 + bmv.value
         vn1 = vn1 + b1v.value
         vn2 = vn2 + b2v.value
         an1 = an1 + b1c.value
         an2 = an2 + b2c.value
+        tn0 = tn0 = bt0.value
         time.sleep(0.1)
     v0 = vn0 / snapshots * coeffV0
     v1 = vn1 / snapshots * coeffV1
     v2 = vn2 / snapshots * coeffV2
+    t0 = tn0 / snapshots * coeffT0
     a1 = ((an1 / snapshots) - 0.5) * coeffA1 + offsetA1
     if a1 >= (coeffA1 * 0.45) or a1 <= -(coeffA1 * 0.45):
       a1 = 0
@@ -70,8 +75,8 @@ def gpio(sc, start_time):
 
     mycursor = mydb.cursor()
 
-    sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff) VALUES (%s, %s, %s, %s, %s, %s)"
-    values = (v0, v1, v2, a1, a2, interval / 60 / 60)
+    sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff, temperature) VALUES (%s, %s, %s, %s, %s, %s)"
+    values = (v0, v1, v2, a1, a2, interval / 60 / 60, t0)
     mycursor.execute(sql, values)
 
     mydb.commit()
