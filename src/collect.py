@@ -55,16 +55,28 @@ def gpio(sc, start_time):
         an2 = an2 + b2c.value
         tn0 = tn0 + bt0.value
         time.sleep(0.1)
+
     v0 = ((vn0 / snapshots) + offsetV0) * coeffV0
+    if v0 < 0:
+      v0 = 0
+
     v1 = ((vn1 / snapshots) + offsetV1) * coeffV1
+    if v1 < 0:
+      v1 = 0
+
     v2 = ((vn2 / snapshots) + offsetV2) * coeffV2
-    t0 = tn0 / snapshots
+    if v2 < 0:
+      v2 = 0
+
     a1 = ((an1 / snapshots) + offsetA1) * coeffA1
     if a1 >= (coeffA1 * 0.44) or a1 <= -(coeffA1 * 0.44):
       a1 = 0
+
     a2 = ((an2 / snapshots) + offsetA1) * coeffA2
     if a2 >= (coeffA2 * 0.44) or a2 <= -(coeffA2 * 0.44):
       a2 = 0
+
+    t0 = tn0 / snapshots
 
     # Voltage Divider
     Vin = 3.3
