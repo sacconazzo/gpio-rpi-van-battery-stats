@@ -19,13 +19,13 @@ b2c = MCP3008(6)
 bt0 = MCP3008(7)
 pot0 = PWMLED(14)
 
-coeffV0 = float(os.getenv("COEFF_V0"))
-coeffV1 = float(os.getenv("COEFF_V1"))
-coeffV2 = float(os.getenv("COEFF_V2"))
-offsetA1 = float(os.getenv("OFFSET_A1"))
-offsetA2 = float(os.getenv("OFFSET_A2"))
-coeffA1 = float(os.getenv("COEFF_A1"))
-coeffA2 = float(os.getenv("COEFF_A2"))
+coeffV0 = float(os.getenv("COEFF_V0")) # 3.3 * (R1 + R2) / R2
+coeffV1 = float(os.getenv("COEFF_V1")) # 3.3 * (R1 + R2) / R2
+coeffV2 = float(os.getenv("COEFF_V2")) # 3.3 * (R1 + R2) / R2
+offsetA1 = float(os.getenv("OFFSET_A1")) # -0.5
+offsetA2 = float(os.getenv("OFFSET_A2")) # -0.5
+coeffA1 = float(os.getenv("COEFF_A1")) # 3.3 * 1000 / 40 -> sensitivity mV/A
+coeffA2 = float(os.getenv("COEFF_A2")) # 3.3 * 1000 / 40 -> sensitivity mV/A
 
 def gpio(sc, start_time):
     pot0.value = 0.1
@@ -56,10 +56,10 @@ def gpio(sc, start_time):
     v1 = vn1 / snapshots * coeffV1
     v2 = vn2 / snapshots * coeffV2
     t0 = (tn0 / snapshots)
-    a1 = ((an1 / snapshots) - 0.5) * coeffA1 + offsetA1
+    a1 = ((an1 / snapshots) + offsetA1) * coeffA1
     if a1 >= (coeffA1 * 0.44) or a1 <= -(coeffA1 * 0.44):
       a1 = 0
-    a2 = ((an2 / snapshots) - 0.5) * coeffA2 + offsetA2
+    a2 = ((an2 / snapshots) + offsetA1) * coeffA2
     if a2 >= (coeffA2 * 0.44) or a2 <= -(coeffA2 * 0.44):
       a2 = 0
 
@@ -76,7 +76,7 @@ def gpio(sc, start_time):
     
     # Calculate Resistance
     Rt = (Vout * Ro) / (Vin - Vout) 
-    # Rt = 10000000  # Used for Testing. Setting Rt=10k should give TempC=25
+    # Rt = 10000  # Used for Testing. Setting Rt=10k should give TempC=25
     
     # Steinhart - Hart Equation
     if t0 > 0 or t0 < 1:
