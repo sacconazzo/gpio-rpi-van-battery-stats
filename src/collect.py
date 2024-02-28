@@ -24,8 +24,8 @@ coeffV1 = float(os.getenv("COEFF_V1")) # 3.3 * (R1 + R2) / R2
 coeffV2 = float(os.getenv("COEFF_V2")) # 3.3 * (R1 + R2) / R2
 offsetA1 = float(os.getenv("OFFSET_A1")) # -0.5
 offsetA2 = float(os.getenv("OFFSET_A2")) # -0.5
-coeffA1 = float(os.getenv("COEFF_A1")) # 3.3 * 1000 / 40 -> sensitivity mV/A
-coeffA2 = float(os.getenv("COEFF_A2")) # 3.3 * 1000 / 40 -> sensitivity mV/A
+coeffA1 = float(os.getenv("COEFF_A1")) # 3.3 * 1000 / mV/A -> sensitivity
+coeffA2 = float(os.getenv("COEFF_A2")) # 3.3 * 1000 / mV/A -> sensitivity
 
 def gpio(sc, start_time):
     pot0.value = 0.1
@@ -55,7 +55,7 @@ def gpio(sc, start_time):
     v0 = vn0 / snapshots * coeffV0
     v1 = vn1 / snapshots * coeffV1
     v2 = vn2 / snapshots * coeffV2
-    t0 = (tn0 / snapshots)
+    t0 = tn0 / snapshots
     a1 = ((an1 / snapshots) + offsetA1) * coeffA1
     if a1 >= (coeffA1 * 0.44) or a1 <= -(coeffA1 * 0.44):
       a1 = 0
