@@ -19,11 +19,14 @@ b2c = MCP3008(6)
 bt0 = MCP3008(7)
 pot0 = PWMLED(14)
 
+offsetV0 = float(os.getenv("OFFSET_V0")) # noisy
+offsetV1 = float(os.getenv("OFFSET_V1")) # noisy
+offsetV2 = float(os.getenv("OFFSET_V2")) # noisy
 coeffV0 = float(os.getenv("COEFF_V0")) # 3.3 * (R1 + R2) / R2
 coeffV1 = float(os.getenv("COEFF_V1")) # 3.3 * (R1 + R2) / R2
 coeffV2 = float(os.getenv("COEFF_V2")) # 3.3 * (R1 + R2) / R2
-offsetA1 = float(os.getenv("OFFSET_A1")) # -0.5
-offsetA2 = float(os.getenv("OFFSET_A2")) # -0.5
+offsetA1 = float(os.getenv("OFFSET_A1")) # -0.5 + noisy
+offsetA2 = float(os.getenv("OFFSET_A2")) # -0.5 + noisy
 coeffA1 = float(os.getenv("COEFF_A1")) # 3.3 * 1000 / mV/A -> sensitivity
 coeffA2 = float(os.getenv("COEFF_A2")) # 3.3 * 1000 / mV/A -> sensitivity
 
@@ -52,9 +55,9 @@ def gpio(sc, start_time):
         an2 = an2 + b2c.value
         tn0 = tn0 + bt0.value
         time.sleep(0.1)
-    v0 = vn0 / snapshots * coeffV0
-    v1 = vn1 / snapshots * coeffV1
-    v2 = vn2 / snapshots * coeffV2
+    v0 = ((vn0 / snapshots) + offsetV0) * coeffV0
+    v1 = ((vn1 / snapshots) + offsetV1) * coeffV1
+    v2 = ((vn2 / snapshots) + offsetV2) * coeffV2
     t0 = tn0 / snapshots
     a1 = ((an1 / snapshots) + offsetA1) * coeffA1
     if a1 >= (coeffA1 * 0.44) or a1 <= -(coeffA1 * 0.44):
