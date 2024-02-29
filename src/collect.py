@@ -11,8 +11,8 @@ import logging
 load_dotenv()
 
 bmv = MCP3008(0)
-b1v = MCP3008(1)
-b2v = MCP3008(2)
+b1v = MCP3008(2)
+b2v = MCP3008(1)
 vol = MCP3008(3)
 b1c = MCP3008(5)
 b2c = MCP3008(6)
