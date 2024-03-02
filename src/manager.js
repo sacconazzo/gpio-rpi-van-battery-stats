@@ -86,7 +86,7 @@ const share = async () => {
       WHERE\
         timestamp> (NOW() - INTERVAL 61 MINUTE)\
       ORDER BY\
-        id DESC\
+        id ASC\
       LIMIT 500;"
     );
     const data = {

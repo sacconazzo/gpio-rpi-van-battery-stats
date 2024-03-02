@@ -109,6 +109,11 @@ sudo yarn manager &
 }
 ```
 
+This realtime data
 https://api.giona.tech/domotica/battery
 
+This realtime dashboard
+https://sacconazzo.altervista.org/#battery
+
+Ref.:
 https://giona.tech
