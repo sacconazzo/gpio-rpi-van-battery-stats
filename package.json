@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "rpi battery signals",
   "scripts": {
+    "db:prepare": "npx knex migrate:latest",
     "collect": "python3 src/collect.py",
     "manager": "node src/manager.js",
     "refresh": "bash ./refresh.sh"

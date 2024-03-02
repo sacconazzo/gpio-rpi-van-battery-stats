@@ -33,7 +33,8 @@ long to explain... I will
 
 - enable serial port interface via `sudo rspi-config`
 - install this repo in your rpi home (including Python dependencies manually)
-- create database and table `battery-snaps`
+- create mysql server and database (you can use `docker-compose.yaml` in `/db` folder)
+- create table `battery-snaps` (you can create running `yarn db:prepare`)
 - configure `.env` file like `.env.example`
 - configure a startup script in your RPI (example in `/etc/rc.local`) adding:
 
