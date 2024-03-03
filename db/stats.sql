@@ -34,10 +34,9 @@ SELECT
 FROM
 	`battery-snaps`
 WHERE
-	timestamp> (NOW() - INTERVAL 61 MINUTE)
+	timestamp> (NOW() - INTERVAL 14400 MINUTE)
 ORDER BY
-	id DESC
-LIMIT 500;
+	id DESC;
 
 
 -- for testing
