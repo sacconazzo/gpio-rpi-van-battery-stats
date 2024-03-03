@@ -49,9 +49,9 @@ const share = async () => {
 
   try {
     const system = {
-      uptime: execSync("uptime"),
+      uptime: execSync("uptime").toString(),
       temp: Number(
-        execSync("vcgencmd measure_temp").split("=")[1].split("'")[0]
+        execSync("vcgencmd measure_temp").toString().split("=")[1].split("'")[0]
       ),
     };
     const [dayWeek] = await db.raw(
