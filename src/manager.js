@@ -48,6 +48,12 @@ const share = async () => {
   pwmShare.hardwarePwmWrite(frequency, 20000);
 
   try {
+    const system = {
+      uptime: execSync("uptime"),
+      temp: Number(
+        execSync("vcgencmd measure_temp").split("=")[1].split("'")[0]
+      ),
+    };
     const [dayWeek] = await db.raw(
       "SELECT\
         date(timestamp) AS day,\
@@ -90,6 +96,7 @@ const share = async () => {
       LIMIT 500;"
     );
     const data = {
+      system,
       dayWeek,
       realtime,
     };
