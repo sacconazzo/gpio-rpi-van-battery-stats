@@ -84,10 +84,10 @@ const share = async () => {
       FROM\
         `battery-snaps`\
       WHERE\
-        timestamp> (NOW() - INTERVAL 240 MINUTE)\
+        timestamp> (NOW() - INTERVAL 1440 MINUTE)\
       ORDER BY\
-        id ASC\
-      LIMIT 500;"
+        id ASC;\
+      -- LIMIT 500;"
     );
     const data = {
       dayWeek,
