@@ -72,7 +72,7 @@ const share = async () => {
         round(min(temperature), 2) tempMin,\
         round(max(temperature), 2) tempMax\
       FROM\
-        battery-snaps\
+        ``battery-snaps``\
       WHERE\
         date(timestamp)> (NOW() - INTERVAL 7 DAY)\
       GROUP BY\
@@ -88,7 +88,7 @@ const share = async () => {
         round(b2_current, 1) AS b2A,\
         round(temperature, 2) AS temp\
       FROM\
-        battery-snaps\
+      ``battery-snaps``\
       WHERE\
         timestamp> (NOW() - INTERVAL 360 MINUTE)\
       ORDER BY\
