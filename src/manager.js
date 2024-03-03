@@ -119,46 +119,49 @@ setInterval(share, Number(process.env.SHARE_INTERVAL) * 1000);
 share();
 
 // BUTTONS
-let waitReboot;
-buttonReboot.glitchFilter(10000);
-buttonReboot.on("interrupt", function (level) {
-  if (level) {
-    clearTimeout(waitReboot);
-    setTimeout(() => pulsePress.servoWrite(pulseWidth), 500);
-    waitReboot = setTimeout(
-      () => exec("sudo reboot", { stdio: "inherit" }),
-      2000
-    );
-  } else {
-    clearLedButtons();
-    clearTimeout(waitReboot);
-  }
-});
-buttonShutDown.glitchFilter(10000);
+if (process.env.ENABLE_BUTTONS === "true") {
+  let waitReboot;
+  buttonReboot.glitchFilter(10000);
+  buttonReboot.on("interrupt", function (level) {
+    if (level) {
+      clearTimeout(waitReboot);
+      setTimeout(() => pulsePress.servoWrite(pulseWidth), 500);
+      waitReboot = setTimeout(
+        () => exec("sudo reboot", { stdio: "inherit" }),
+        2000
+      );
+    } else {
+      clearLedButtons();
+      clearTimeout(waitReboot);
+    }
+  });
+  buttonShutDown.glitchFilter(10000);
 
-let waitPowerOff;
-buttonShutDown.on("interrupt", function (level) {
-  if (level) {
-    clearTimeout(waitPowerOff);
-    setTimeout(() => {
-      pulsePress.servoWrite(pulseWidth);
-      letActivePowerOff = true;
-    }, 500);
-    waitPowerOff = setTimeout(
-      () => exec("sudo poweroff", { stdio: "inherit" }),
-      2000
-    );
-  } else {
-    clearLedButtons();
-    clearTimeout(waitPowerOff);
-  }
-});
+  let waitPowerOff;
+  buttonShutDown.on("interrupt", function (level) {
+    if (level) {
+      clearTimeout(waitPowerOff);
+      setTimeout(() => {
+        pulsePress.servoWrite(pulseWidth);
+        letActivePowerOff = true;
+      }, 500);
+      waitPowerOff = setTimeout(
+        () => exec("sudo poweroff", { stdio: "inherit" }),
+        2000
+      );
+    } else {
+      clearLedButtons();
+      clearTimeout(waitPowerOff);
+    }
+  });
 
-const clearLedButtons = () => {
-  const isPressed = buttonReboot.digitalRead() || buttonShutDown.digitalRead();
-  if (!isPressed) pulsePress.digitalWrite(0);
-};
-setInterval(clearLedButtons, 100);
+  const clearLedButtons = () => {
+    const isPressed =
+      buttonReboot.digitalRead() || buttonShutDown.digitalRead();
+    if (!isPressed) pulsePress.digitalWrite(0);
+  };
+  setInterval(clearLedButtons, 100);
+}
 
 // END OF PROCESS
 const cleanupAndExit = () => {
