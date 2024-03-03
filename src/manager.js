@@ -55,8 +55,8 @@ const share = async () => {
       ),
     };
     const [dayWeek] = await db.raw(
-      "SELECT\
-        date(timestamp) AS day,\
+      `SELECT\
+        date(CONVERT_TZ(timestamp, 'UTC', '${process.env.DB_TIMEZONE}')) AS day,\
         round(avg(bm_voltage), 2) bmV,\
         round(min(bm_voltage), 2) bmVmin,\
         round(max(bm_voltage), 2) bmVmax,\
@@ -66,21 +66,21 @@ const share = async () => {
         round(avg(b2_voltage), 2) b2V,\
         round(min(b2_voltage), 2) b2Vmin,\
         round(max(b2_voltage), 2) b2Vmax,\
-        round(sum(`b1_current` * `coeff`), 1) AS b1Ah,\
-        round(sum(`b2_current` * `coeff`), 1) AS b2Ah,\
+        round(sum(b1_current * coeff), 1) AS b1Ah,\
+        round(sum(b2_current * coeff), 1) AS b2Ah,\
         round(avg(temperature), 2) temp,\
         round(min(temperature), 2) tempMin,\
         round(max(temperature), 2) tempMax\
       FROM\
-        `battery-snaps`\
+        battery-snaps\
       WHERE\
         date(timestamp)> (NOW() - INTERVAL 7 DAY)\
       GROUP BY\
-        day;"
+        day;`
     );
     const [realtime] = await db.raw(
-      "SELECT\
-        `timestamp`,\
+      `SELECT\
+        CONVERT_TZ(timestamp, 'UTC', '${process.env.DB_TIMEZONE}') as timestamp,\
         round(bm_voltage, 2) AS bmV,\
         round(b1_voltage, 2) AS b1V,\
         round(b2_voltage, 2) AS b2V,\
@@ -88,12 +88,12 @@ const share = async () => {
         round(b2_current, 1) AS b2A,\
         round(temperature, 2) AS temp\
       FROM\
-        `battery-snaps`\
+        battery-snaps\
       WHERE\
         timestamp> (NOW() - INTERVAL 360 MINUTE)\
       ORDER BY\
         id ASC\
-      LIMIT 500;"
+      LIMIT 500;`
     );
     const data = {
       system,

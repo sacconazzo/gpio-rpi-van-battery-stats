@@ -1,6 +1,6 @@
 -- day week
 SELECT
-	date(timestamp) AS data,
+	date(CONVERT_TZ( `timestamp`, 'UTC', 'Europe/Rome')) AS data,
 	round(avg(bm_voltage), 2) bmV,
 	round(min(bm_voltage), 2) bmVmin,
 	round(max(bm_voltage), 2) bmVmax,
@@ -24,7 +24,7 @@ GROUP BY
 
 -- realtime
 SELECT
-	`timestamp`,
+	CONVERT_TZ( `timestamp`, 'UTC', 'Europe/Rome') as timestamp,
 	round(bm_voltage, 2) AS bmV,
 	round(b1_voltage, 2) AS b1V,
 	round(b2_voltage, 2) AS b2V,
@@ -42,7 +42,7 @@ ORDER BY
 
 -- for testing
 SELECT
-	date(timestamp) AS data,
+	date(CONVERT_TZ( `timestamp`, 'UTC', 'Europe/Rome')) AS data,
 	round(avg(bm_voltage), 4) bmV,
 	round(avg(b1_voltage), 4) b1V,
 	round(avg(b2_voltage), 4) b2V,
