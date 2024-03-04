@@ -7,7 +7,7 @@
 - rpi4
 - breadboard and connectors
 - analog voltage sensor (it is possible to build it yourself by creating a voltage divider with some resistors)
-- analog current sensor (ACS758)
+- analog current sensor (ACS758 o WCS1700)
 - analog potentiometer
 - adc converter (MCP3008)
 - some leds and resistors (optional)
