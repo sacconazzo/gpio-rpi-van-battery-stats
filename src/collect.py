@@ -76,7 +76,7 @@ def gpio(sc, start_time):
     if a1 >= (coeffA1 * 0.44) or a1 <= -(coeffA1 * 0.44):
       a1 = 0
 
-    a2 = ((an2 / snapshots) + offsetA1) * coeffA2
+    a2 = ((an2 / snapshots) + offsetA2) * coeffA2
     print("a2: "+str(an2 / snapshots))
     if a2 >= (coeffA2 * 0.44) or a2 <= -(coeffA2 * 0.44):
       a2 = 0
