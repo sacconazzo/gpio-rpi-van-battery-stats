@@ -6,7 +6,7 @@
 
 - RPI4
 - Breadboard and connectors
-- Analog Voltage sensor (it is possible to build it yourself by creating a voltage divider with some resistors)
+- Analog Voltage sensor (it is possible to build it by yourself creating a voltage divider with some resistors)
 - Analog Current sensor (ACS758 o WCS1700)
 - Analog potentiometer
 - ADC converter (MCP3008)
@@ -27,7 +27,11 @@
 
 long to explain... I will do it :)
 
-<img src="res/img/breadboard.jpg" alt="BreadBoard conncetions" width="45%"/> <img src="res/img/rpi4.jpg" alt="RPI4 conncetions" width="45%"/>
+<img src="res/img/breadboard-completed-1.jpg" alt="BreadBoard completed" width="45%"/> <img src="res/img/breadboard-completed-2.jpg" alt="RPI4 completed" width="45%"/>
+
+<img src="res/img/rpi4-init.jpg" alt="RPI4 connections" width="45%"/> <img src="res/img/rpi4-atwork.jpg" alt="RPI4 at work" width="45%"/>
+
+<img src="res/img/breadboard-atwork.jpg" alt="BreadBoard at work" width="30%" />
 
 ### Software
 
