@@ -4,37 +4,37 @@
 
 ### Hardware:
 
-- rpi4
-- breadboard and connectors
-- analog voltage sensor (it is possible to build it yourself by creating a voltage divider with some resistors)
-- analog current sensor (ACS758 o WCS1700)
-- analog potentiometer
-- adc converter (MCP3008)
-- some leds and resistors (optional)
-- some physical buttons (optional)
+- RPI4
+- Breadboard and connectors
+- Analog Voltage sensor (it is possible to build it yourself by creating a voltage divider with some resistors)
+- Analog Current sensor (ACS758 o WCS1700)
+- Analog potentiometer
+- ADC converter (MCP3008)
+- Some leds and resistors (optional)
+- Some physical buttons (optional)
 
 ### Software
 
-- Pi OS
-- MySQL server installed (I haven't created the migration script yet, but the table is only one and simple)
+- Pi OS (10 or later)
+- MySQL server 8 installed
 - Python3
-- NodeJS 12 or later
+- NodeJS (12 or later)
 - A Web Server where to post the stats data (in this case `api.giona.tech`, you could comment this part if you want to work locally by directly querying the db)
 
 ## Installation
 
 ### Hardware
 
-long to explain... I will
+long to explain... I will do it :)
 
-<img src="res/breadboard.jpg" alt="BreadBoard conncetions" width="45%"/> <img src="res/rpi4.jpg" alt="RPI4 conncetions" width="45%"/>
+<img src="res/img/breadboard.jpg" alt="BreadBoard conncetions" width="45%"/> <img src="res/img/rpi4.jpg" alt="RPI4 conncetions" width="45%"/>
 
 ### Software
 
 - enable serial port interface via `sudo rspi-config`
 - install this repo in your rpi home (including Python dependencies manually)
 - create mysql server and database (you can use `docker-compose.yaml` in `/db` folder)
-- create table `battery-snaps` (you can create running `yarn db:prepare`)
+- create table `battery-snaps` (you can create it running `yarn db:prepare`)
 - configure `.env` file like `.env.example`
 - configure a startup script in your RPI (example in `/etc/rc.local`) adding:
 
