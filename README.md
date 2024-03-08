@@ -51,6 +51,8 @@ sudo yarn manager &
 
 ### Output generated example
 
+#### Realtime data
+
 ```
 {
     "dayWeek": [
@@ -114,10 +116,12 @@ sudo yarn manager &
 }
 ```
 
-Realtime data
 https://api.giona.tech/domotica/battery
 
-Realtime dashboard
+#### Realtime dashboard
+
+<img src="res/img/dashboard.png" alt="web app" width="90%" />
+
 https://sacconazzo.altervista.org/#battery
 
 https://giona.tech
