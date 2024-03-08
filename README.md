@@ -27,9 +27,9 @@
 
 long to explain... I will do it :)
 
-<img src="res/img/breadboard-completed-1.jpg" alt="BreadBoard completed" width="45%"/> <img src="res/img/breadboard-completed-2.jpg" alt="RPI4 completed" width="45%"/>
+<img src="res/img/breadboard-completed-1.jpg" alt="BreadBoard completed" width="48%"/> <img src="res/img/breadboard-completed-2.jpg" alt="RPI4 completed" width="48%"/>
 
-<img src="res/img/rpi4-init.jpg" alt="RPI4 connections" width="45%"/> <img src="res/img/rpi4-atwork.jpg" alt="RPI4 at work" width="45%"/>
+<img src="res/img/rpi4-init.jpg" alt="RPI4 connections" width="48%"/> <img src="res/img/rpi4-atwork.jpg" alt="RPI4 at work" width="48%"/>
 
 <img src="res/img/breadboard-atwork.jpg" alt="BreadBoard at work" width="30%" />
 
@@ -120,7 +120,7 @@ https://api.giona.tech/domotica/battery
 
 #### Realtime dashboard
 
-<img src="res/img/dashboard.png" alt="web app" width="90%" />
+<img src="res/img/dashboard.png" alt="web app" width="100%" />
 
 https://sacconazzo.altervista.org/#battery
 
