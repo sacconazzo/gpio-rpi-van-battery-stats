@@ -54,17 +54,21 @@ bot.command("billy", async (ctx) => {
   }
 });
 
+const onMovement = async (source) => {
+  try {
+    // Invia la foto alla chat abilitata
+    await bot.telegram.sendPhoto(chatEnabled[0], { source });
+    campera.delete(source);
+
+    console.log("Movement received");
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 bot.command("movement_on", async (ctx) => {
   try {
-    campera.start({
-      onMovement: async (source) => {
-        // Invia la foto alla chat abilitata
-        await bot.telegram.sendPhoto(chatEnabled[0], { source });
-        campera.delete(source);
-
-        console.log("Movement received");
-      },
-    });
+    campera.start({ onMovement });
 
     await ctx.reply("Sensor movement ON");
 
