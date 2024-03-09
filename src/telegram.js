@@ -92,9 +92,9 @@ bot.command("movement_off", async (ctx) => {
 
 bot.command("reboot", async (ctx) => {
   try {
-    // await ctx.reply("System reboot");
+    await ctx.reply("System reboot");
 
-    setTimeout(() => exec("sudo reboot"), 2000);
+    setTimeout(() => exec("sudo reboot"), 3000);
 
     console.log("System reboot");
   } catch (e) {
@@ -104,9 +104,9 @@ bot.command("reboot", async (ctx) => {
 
 bot.command("poweroff", async (ctx) => {
   try {
-    // await ctx.reply("System power off");
+    await ctx.reply("System power off");
 
-    setTimeout(() => exec("sudo poweroff"), 2000);
+    setTimeout(() => exec("sudo poweroff"), 3000);
 
     console.log("System poweroff");
   } catch (e) {
