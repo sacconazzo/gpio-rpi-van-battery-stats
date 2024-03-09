@@ -68,7 +68,7 @@ bot.command("movement_off", async (ctx) => {
 bot.command("reboot", async (ctx) => {
   try {
     await ctx.reply("System reboot");
-    //setTimeout(() => exec("sudo reboot", { stdio: "inherit" }), 1000);
+    setTimeout(() => exec("sudo reboot", { stdio: "inherit" }), 2000);
   } catch (e) {
     console.error(e);
   }
@@ -76,7 +76,7 @@ bot.command("reboot", async (ctx) => {
 bot.command("poweroff", async (ctx) => {
   try {
     await ctx.reply("System power off");
-    //setTimeout(() => exec("sudo poweroff", { stdio: "inherit" }), 1000);
+    setTimeout(() => exec("sudo poweroff", { stdio: "inherit" }), 2000);
   } catch (e) {
     console.error(e);
   }
