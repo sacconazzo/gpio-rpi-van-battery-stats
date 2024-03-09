@@ -181,7 +181,7 @@ const logger = winston.createLogger({
 });
 // Sovrascrive tutti i metodi di console
 ["log", "error", "warn", "info"].forEach((method) => {
-  console.prototype[method] = (...args) => logger[method](logger, args[0]); // Inoltra gli argomenti al metodo corrispondente del logger di Winston
+  console[method] = (m) => logger.info(m); // Inoltra gli argomenti al metodo corrispondente del logger di Winston
 });
 
 // END OF PROCESS
