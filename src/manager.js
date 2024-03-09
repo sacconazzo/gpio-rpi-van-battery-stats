@@ -129,10 +129,7 @@ if (process.env.ENABLE_BUTTONS === "true") {
     if (level) {
       clearTimeout(waitReboot);
       setTimeout(() => pulsePress.servoWrite(pulseWidth), 500);
-      waitReboot = setTimeout(
-        () => exec("sudo reboot", { stdio: "inherit" }),
-        2000
-      );
+      waitReboot = setTimeout(() => exec("sudo reboot"), 2000);
     } else {
       clearLedButtons();
       clearTimeout(waitReboot);
@@ -148,10 +145,7 @@ if (process.env.ENABLE_BUTTONS === "true") {
         pulsePress.servoWrite(pulseWidth);
         letActivePowerOff = true;
       }, 500);
-      waitPowerOff = setTimeout(
-        () => exec("sudo poweroff", { stdio: "inherit" }),
-        2000
-      );
+      waitPowerOff = setTimeout(() => exec("sudo poweroff"), 2000);
     } else {
       clearLedButtons();
       clearTimeout(waitPowerOff);

@@ -22,11 +22,8 @@ module.exports = {
         const fileName = `./camera/${new Date().toISOString()}.jpg`;
 
         const l = execSync(
-          `libcamera-still -o ${fileName} --width 2028 --height 1520`,
-          {
-            stdio: "inherit",
-          }
-        );
+          `libcamera-still -o ${fileName} --width 2028 --height 1520`
+        ).toString();
         console.log(l);
 
         onMovement(fileName);
@@ -43,19 +40,14 @@ module.exports = {
     const fileName = `./camera/${new Date().toISOString()}.jpg`;
 
     const l = execSync(
-      `libcamera-still -o ${fileName} --width 2028 --height 1520`,
-      {
-        stdio: "inherit",
-      }
-    );
+      `libcamera-still -o ${fileName} --width 2028 --height 1520`
+    ).toString();
     console.log(l);
 
     return fileName;
   },
 
   delete: (file) => {
-    execSync(`rm ${file}`, {
-      stdio: "inherit",
-    });
+    execSync(`rm ${file}`);
   },
 };

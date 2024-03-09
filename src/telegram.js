@@ -73,7 +73,7 @@ bot.command("reboot", async (ctx) => {
   try {
     await ctx.reply("System reboot");
 
-    setTimeout(() => exec("sudo reboot", { stdio: "inherit" }), 2000);
+    setTimeout(() => exec("sudo reboot"), 2000);
 
     console.log("System reboot");
   } catch (e) {
@@ -84,7 +84,7 @@ bot.command("poweroff", async (ctx) => {
   try {
     await ctx.reply("System power off");
 
-    setTimeout(() => exec("sudo poweroff", { stdio: "inherit" }), 2000);
+    setTimeout(() => exec("sudo poweroff"), 2000);
 
     console.log("System poweroff");
   } catch (e) {
