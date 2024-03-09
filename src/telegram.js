@@ -5,7 +5,7 @@ const campera = require("./camera");
 
 // Token del bot Telegram fornito da BotFather
 const token = process.env.TELEGRAM_TOKEN;
-const chatEnabled = process.env.CHATS.split(",");
+const chatEnabled = (process.env.TELEGRAM_CHATS || "").split(",");
 const bot = new Telegraf(token);
 
 let isStarted = false;
