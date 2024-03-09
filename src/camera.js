@@ -11,7 +11,7 @@ let startInterval;
 
 module.exports = {
   start: ({ onMovement = (f) => console.log(`created: ${f}`) }) => {
-    this.stop();
+    clearInterval(startInterval);
     movementVCC.digitalWrite(1);
     startInterval = setInterval(() => {
       const movement = movementSensor.digitalRead();

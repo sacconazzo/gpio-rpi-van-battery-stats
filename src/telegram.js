@@ -24,7 +24,9 @@ bot.command("movement_on", async (ctx) => {
     if (!chatEnabled.includes(id)) ctx.reply("not authorized");
     campera.start({ onMovement });
     await ctx.reply("Sensor movement ON");
-  } catch {}
+  } catch (e) {
+    console.error(e);
+  }
 });
 bot.command("movement_off", async (ctx) => {
   const { id } = await ctx.getChat();
@@ -32,7 +34,9 @@ bot.command("movement_off", async (ctx) => {
     if (!chatEnabled.includes(id)) ctx.reply("not authorized");
     campera(stop);
     await ctx.replyWithPhoto("Sensor movement OFF");
-  } catch {}
+  } catch (e) {
+    console.error(e);
+  }
 });
 bot.command("picture", async (ctx) => {
   // Invia la foto al chatId del mittente
@@ -40,7 +44,9 @@ bot.command("picture", async (ctx) => {
     const source = campera.picture();
     await ctx.replyWithPhoto({ source });
     campera.delete(source);
-  } catch {}
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 const onMovement = async (source) => {
@@ -48,8 +54,8 @@ const onMovement = async (source) => {
     // Invia la foto alla chat abilitata
     await bot.telegram.sendPhoto(chatEnabled[0], { source });
     campera.delete(source);
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
   }
 };
 
