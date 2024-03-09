@@ -5,6 +5,8 @@ const Gpio = require("pigpio").Gpio;
 const { exec, execSync } = require("child_process");
 const db = require("./db");
 
+require("./camera");
+
 const apiToken = process.env.API_TOKEN;
 
 // Imposta il numero del pin GPIO che desideri utilizzare
