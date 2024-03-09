@@ -22,7 +22,7 @@ module.exports = {
         });
         onMovement(fileName);
       }
-    }, 2000);
+    }, 4000);
   },
   stop: () => {
     clearInterval(startInterval);

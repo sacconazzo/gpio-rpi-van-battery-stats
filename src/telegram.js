@@ -17,11 +17,24 @@ bot.start((ctx) => {
   } catch {}
 });
 
-// Ascolta i comandi
-bot.command("movement_on", async (ctx) => {
+const isAuthorized = async (ctx, next) => {
   const { id } = await ctx.getChat();
   try {
-    if (!chatEnabled.includes(id)) ctx.reply("not authorized");
+    if (!chatEnabled.includes(String(id))) {
+      ctx.reply("not authorized");
+    } else {
+      next();
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+bot.use(isAuthorized);
+
+// Ascolta i comandi
+bot.command("movement_on", async (ctx) => {
+  try {
     campera.start({ onMovement });
     await ctx.reply("Sensor movement ON");
   } catch (e) {
@@ -29,10 +42,8 @@ bot.command("movement_on", async (ctx) => {
   }
 });
 bot.command("movement_off", async (ctx) => {
-  const { id } = await ctx.getChat();
   try {
-    if (!chatEnabled.includes(id)) ctx.reply("not authorized");
-    campera(stop);
+    campera.stop();
     await ctx.replyWithPhoto("Sensor movement OFF");
   } catch (e) {
     console.error(e);
