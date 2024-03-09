@@ -30,9 +30,18 @@ const isAuthorized = async (ctx, next) => {
   }
 };
 
-bot.use(isAuthorized);
-
 // Ascolta i comandi
+bot.command("picture", async (ctx) => {
+  // Invia la foto al chatId del mittente
+  try {
+    const source = campera.picture();
+    await ctx.replyWithPhoto({ source });
+    campera.delete(source);
+  } catch (e) {
+    console.error(e);
+  }
+});
+bot.use(isAuthorized);
 bot.command("movement_on", async (ctx) => {
   try {
     campera.start({ onMovement });
@@ -45,16 +54,6 @@ bot.command("movement_off", async (ctx) => {
   try {
     campera.stop();
     await ctx.reply("Sensor movement OFF");
-  } catch (e) {
-    console.error(e);
-  }
-});
-bot.command("picture", async (ctx) => {
-  // Invia la foto al chatId del mittente
-  try {
-    const source = campera.picture();
-    await ctx.replyWithPhoto({ source });
-    campera.delete(source);
   } catch (e) {
     console.error(e);
   }
