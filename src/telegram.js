@@ -23,21 +23,21 @@ bot.command("movement_on", async (ctx) => {
   try {
     if (!chatEnabled.includes(chatId)) ctx.reply("not authorized");
     campera.start({ onMovement });
-    ctx.reply("Sensor movement ON");
+    await ctx.reply("Sensor movement ON");
   } catch {}
 });
 bot.command("movement_off", async (ctx) => {
   try {
     if (!chatEnabled.includes(chatId)) ctx.reply("not authorized");
     campera(stop);
-    ctx.replyWithPhoto("Sensor movement OFF");
+    await ctx.replyWithPhoto("Sensor movement OFF");
   } catch {}
 });
 bot.command("picture", async (ctx) => {
   // Invia la foto al chatId del mittente
   try {
     const source = campera.picture();
-    ctx.replyWithPhoto({ source });
+    await ctx.replyWithPhoto({ source });
     campera.delete(source);
   } catch {}
 });
