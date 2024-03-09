@@ -19,16 +19,17 @@ bot.start((ctx) => {
 
 // Ascolta i comandi
 bot.command("movement_on", async (ctx) => {
-  const chatId = await ctx.getChat();
+  const { id } = await ctx.getChat();
   try {
-    if (!chatEnabled.includes(chatId)) ctx.reply("not authorized");
+    if (!chatEnabled.includes(id)) ctx.reply("not authorized");
     campera.start({ onMovement });
     await ctx.reply("Sensor movement ON");
   } catch {}
 });
 bot.command("movement_off", async (ctx) => {
+  const { id } = await ctx.getChat();
   try {
-    if (!chatEnabled.includes(chatId)) ctx.reply("not authorized");
+    if (!chatEnabled.includes(id)) ctx.reply("not authorized");
     campera(stop);
     await ctx.replyWithPhoto("Sensor movement OFF");
   } catch {}
