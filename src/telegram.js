@@ -24,9 +24,9 @@ bot.start(async (ctx) => {
 });
 
 const isAuthorized = async (ctx, next) => {
-  const { id } = await ctx.getChat();
-
   try {
+    const { id } = await ctx.getChat();
+
     if (!chatEnabled.includes(String(id))) {
       await ctx.reply("not authorized");
     } else {
