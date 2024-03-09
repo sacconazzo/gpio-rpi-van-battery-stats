@@ -68,7 +68,7 @@ bot.command("movement_off", async (ctx) => {
 bot.command("reboot", async (ctx) => {
   try {
     exec("sudo reboot", { stdio: "inherit" });
-    await ctx.reply("Sensor movement OFF");
+    await ctx.reply("System reboot");
   } catch (e) {
     console.error(e);
   }
@@ -76,7 +76,7 @@ bot.command("reboot", async (ctx) => {
 bot.command("poweroff", async (ctx) => {
   try {
     exec("sudo poweroff", { stdio: "inherit" });
-    await ctx.reply("Sensor movement OFF");
+    await ctx.reply("System power off");
   } catch (e) {
     console.error(e);
   }
