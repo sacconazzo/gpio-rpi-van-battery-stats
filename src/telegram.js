@@ -14,11 +14,13 @@ let isStarted = false;
 // Ascolta il comando /start dal bot Telegram
 bot.start(async (ctx) => {
   try {
-    ctx.reply("😱");
+    await ctx.reply("😱");
 
     const { id } = await ctx.getChat();
     console.log(`new client ${id}`);
-  } catch {}
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 const isAuthorized = async (ctx, next) => {
@@ -26,7 +28,7 @@ const isAuthorized = async (ctx, next) => {
 
   try {
     if (!chatEnabled.includes(String(id))) {
-      ctx.reply("not authorized");
+      await ctx.reply("not authorized");
     } else {
       next();
     }
