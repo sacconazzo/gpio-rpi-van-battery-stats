@@ -165,6 +165,26 @@ if (process.env.ENABLE_BUTTONS === "true") {
   setInterval(clearLedButtons, 100);
 }
 
+// LOGGER
+const logger = winston.createLogger({
+  transports: [
+    new winston.transports.File({
+      filename: "logs.log", // Il nome del file in cui salvare i log
+      level: "info", // Il livello minimo di log da registrare
+      format: winston.format.combine(
+        winston.format.timestamp(), // Aggiunge timestamp ai log
+        winston.format.json() // Formato JSON per i log
+      ),
+    }),
+  ],
+});
+// Sovrascrive tutti i metodi di console
+["log", "error", "warn", "info", "debug"].forEach((method) => {
+  console[method] = function (...args) {
+    logger[method](...args); // Inoltra gli argomenti al metodo corrispondente del logger di Winston
+  };
+});
+
 // END OF PROCESS
 const cleanupAndExit = () => {
   buttonReboot.disableInterrupt(); // Disabilita gli interrupt prima di uscire
