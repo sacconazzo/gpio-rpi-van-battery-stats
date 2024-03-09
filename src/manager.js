@@ -4,8 +4,7 @@ const axios = require("axios");
 const Gpio = require("pigpio").Gpio;
 const { exec, execSync } = require("child_process");
 const db = require("./db");
-
-require("./camera");
+const telegram = require("./telegram");
 
 const apiToken = process.env.API_TOKEN;
 
@@ -109,6 +108,7 @@ const share = async () => {
     });
     console.log("stored data");
     pulseConnection.servoWrite(pulseWidth);
+    telegram.start();
   } catch (e) {
     console.log(e.message);
     pulseConnection.digitalWrite(0);
@@ -172,6 +172,7 @@ const cleanupAndExit = () => {
   pwmShare.hardwarePwmWrite(0, 0); // Spegni i LED rilascia il GPIO
   pulseConnection.digitalWrite(0);
   pulsePress.digitalWrite(0);
+  telegram.stop();
   process.exit();
 };
 
