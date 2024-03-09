@@ -16,16 +16,20 @@ module.exports = {
     movementVCC.digitalWrite(1);
 
     startInterval = setInterval(() => {
-      const movement = movementSensor.digitalRead();
+      try {
+        const movement = movementSensor.digitalRead();
 
-      if (movement) {
-        const fileName = `./camera/${new Date().toISOString()}.jpg`;
+        if (movement) {
+          const fileName = `./camera/${new Date().toISOString()}.jpg`;
 
-        execSync(
-          `libcamera-still -o ${fileName} --width 2028 --height 1520 --shutter 5000000 --gain 1 --immediate`
-        );
+          execSync(
+            `libcamera-still -o ${fileName} --width 2028 --height 1520 --shutter 5000000 --gain 1 --immediate`
+          );
 
-        onMovement(fileName);
+          onMovement(fileName);
+        }
+      } catch (e) {
+        console.error(e);
       }
     }, 4000);
   },
