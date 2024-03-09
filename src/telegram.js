@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const { Telegraf } = require("telegraf");
+const { exec } = require("child_process");
 const campera = require("./camera");
 
 // Token del bot Telegram fornito da BotFather
@@ -44,7 +45,13 @@ bot.command("billy", async (ctx) => {
 bot.use(isAuthorized);
 bot.command("movement_on", async (ctx) => {
   try {
-    campera.start({ onMovement });
+    campera.start({
+      onMovement: async (source) => {
+        // Invia la foto alla chat abilitata
+        await bot.telegram.sendPhoto(chatEnabled[0], { source });
+        campera.delete(source);
+      },
+    });
     await ctx.reply("Sensor movement ON");
   } catch (e) {
     console.error(e);
@@ -58,16 +65,22 @@ bot.command("movement_off", async (ctx) => {
     console.error(e);
   }
 });
-
-const onMovement = async (source) => {
+bot.command("reboot", async (ctx) => {
   try {
-    // Invia la foto alla chat abilitata
-    await bot.telegram.sendPhoto(chatEnabled[0], { source });
-    campera.delete(source);
+    exec("sudo reboot", { stdio: "inherit" });
+    await ctx.reply("Sensor movement OFF");
   } catch (e) {
     console.error(e);
   }
-};
+});
+bot.command("poweroff", async (ctx) => {
+  try {
+    exec("sudo poweroff", { stdio: "inherit" });
+    await ctx.reply("Sensor movement OFF");
+  } catch (e) {
+    console.error(e);
+  }
+});
 
 module.exports = {
   start: () => {
