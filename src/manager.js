@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const axios = require("axios");
+const winston = require("winston");
 const Gpio = require("pigpio").Gpio;
 const { exec, execSync } = require("child_process");
 const db = require("./db");
