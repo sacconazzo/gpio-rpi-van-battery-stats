@@ -31,7 +31,7 @@ const isAuthorized = async (ctx, next) => {
 };
 
 // Ascolta i comandi
-bot.command("picture", async (ctx) => {
+bot.command("billy", async (ctx) => {
   // Invia la foto al chatId del mittente
   try {
     const source = campera.picture();
