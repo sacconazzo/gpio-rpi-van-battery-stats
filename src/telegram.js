@@ -38,6 +38,8 @@ const isAuthorized = async (ctx, next) => {
 };
 
 // Ascolta i comandi
+bot.use(isAuthorized);
+
 bot.command("billy", async (ctx) => {
   // Invia la foto al chatId del mittente
   try {
@@ -51,8 +53,6 @@ bot.command("billy", async (ctx) => {
     console.error(e);
   }
 });
-
-bot.use(isAuthorized);
 
 bot.command("movement_on", async (ctx) => {
   try {
