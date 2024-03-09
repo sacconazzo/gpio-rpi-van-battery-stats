@@ -44,7 +44,7 @@ bot.command("movement_on", async (ctx) => {
 bot.command("movement_off", async (ctx) => {
   try {
     campera.stop();
-    await ctx.replyWithPhoto("Sensor movement OFF");
+    await ctx.reply("Sensor movement OFF");
   } catch (e) {
     console.error(e);
   }
