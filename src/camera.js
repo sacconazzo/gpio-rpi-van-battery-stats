@@ -7,7 +7,7 @@ const pinMovement = 20;
 const movementVCC = new Gpio(pinVCC, { mode: Gpio.OUTPUT });
 const movementSensor = new Gpio(pinMovement, { mode: Gpio.INPUT });
 
-if (process.env.ENABLE_BUTTONS === "true") {
+if (process.env.ENABLE_MOVEMENT === "true") {
   movementVCC.digitalWrite(1);
   setInterval(() => {
     const movement = movementSensor.digitalRead();
