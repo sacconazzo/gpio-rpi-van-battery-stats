@@ -12,9 +12,12 @@ const bot = new Telegraf(token);
 let isStarted = false;
 
 // Ascolta il comando /start dal bot Telegram
-bot.start((ctx) => {
+bot.start(async (ctx) => {
   try {
     ctx.reply("😱");
+
+    const { id } = await ctx.getChat();
+    console.log(`new client ${id}`);
   } catch {}
 });
 
@@ -42,6 +45,7 @@ bot.command("billy", async (ctx) => {
     console.error(e);
   }
 });
+
 bot.use(isAuthorized);
 bot.command("movement_on", async (ctx) => {
   try {
@@ -68,7 +72,10 @@ bot.command("movement_off", async (ctx) => {
 bot.command("reboot", async (ctx) => {
   try {
     await ctx.reply("System reboot");
+
     setTimeout(() => exec("sudo reboot", { stdio: "inherit" }), 2000);
+
+    console.log("System reboot");
   } catch (e) {
     console.error(e);
   }
@@ -76,7 +83,10 @@ bot.command("reboot", async (ctx) => {
 bot.command("poweroff", async (ctx) => {
   try {
     await ctx.reply("System power off");
+
     setTimeout(() => exec("sudo poweroff", { stdio: "inherit" }), 2000);
+
+    console.log("System poweroff");
   } catch (e) {
     console.error(e);
   }
@@ -87,5 +97,6 @@ module.exports = {
     if (!isStarted) bot.launch();
     isStarted = true;
   },
+
   stop: campera.stop,
 };

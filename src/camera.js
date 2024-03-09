@@ -12,29 +12,47 @@ let startInterval;
 module.exports = {
   start: ({ onMovement = (f) => console.log(`created: ${f}`) }) => {
     clearInterval(startInterval);
+
     movementVCC.digitalWrite(1);
+
     startInterval = setInterval(() => {
       const movement = movementSensor.digitalRead();
+
       if (movement) {
         const fileName = `./camera/${new Date().toISOString()}.jpg`;
-        execSync(`libcamera-still -o ${fileName} --width 2028 --height 1520`, {
-          stdio: "inherit",
-        });
+
+        const l = execSync(
+          `libcamera-still -o ${fileName} --width 2028 --height 1520`,
+          {
+            stdio: "inherit",
+          }
+        );
+        console.log(l);
+
         onMovement(fileName);
       }
     }, 4000);
   },
+
   stop: () => {
     clearInterval(startInterval);
     movementVCC.digitalWrite(0);
   },
+
   picture: () => {
     const fileName = `./camera/${new Date().toISOString()}.jpg`;
-    execSync(`libcamera-still -o ${fileName} --width 2028 --height 1520`, {
-      stdio: "inherit",
-    });
+
+    const l = execSync(
+      `libcamera-still -o ${fileName} --width 2028 --height 1520`,
+      {
+        stdio: "inherit",
+      }
+    );
+    console.log(l);
+
     return fileName;
   },
+
   delete: (file) => {
     execSync(`rm ${file}`, {
       stdio: "inherit",
