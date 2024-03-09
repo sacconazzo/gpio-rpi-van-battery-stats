@@ -23,6 +23,7 @@ bot.start(async (ctx) => {
 
 const isAuthorized = async (ctx, next) => {
   const { id } = await ctx.getChat();
+
   try {
     if (!chatEnabled.includes(String(id))) {
       ctx.reply("not authorized");
@@ -39,14 +40,18 @@ bot.command("billy", async (ctx) => {
   // Invia la foto al chatId del mittente
   try {
     const source = campera.picture();
+
     await ctx.replyWithPhoto({ source });
     campera.delete(source);
+
+    console.log("Picture required");
   } catch (e) {
     console.error(e);
   }
 });
 
 bot.use(isAuthorized);
+
 bot.command("movement_on", async (ctx) => {
   try {
     campera.start({
@@ -54,21 +59,31 @@ bot.command("movement_on", async (ctx) => {
         // Invia la foto alla chat abilitata
         await bot.telegram.sendPhoto(chatEnabled[0], { source });
         campera.delete(source);
+
+        console.log("Movement received");
       },
     });
+
     await ctx.reply("Sensor movement ON");
+
+    console.log("Sensor movement ON");
   } catch (e) {
     console.error(e);
   }
 });
+
 bot.command("movement_off", async (ctx) => {
   try {
     campera.stop();
+
     await ctx.reply("Sensor movement OFF");
+
+    console.log("Sensor movement OFF");
   } catch (e) {
     console.error(e);
   }
 });
+
 bot.command("reboot", async (ctx) => {
   try {
     await ctx.reply("System reboot");
@@ -80,6 +95,7 @@ bot.command("reboot", async (ctx) => {
     console.error(e);
   }
 });
+
 bot.command("poweroff", async (ctx) => {
   try {
     await ctx.reply("System power off");

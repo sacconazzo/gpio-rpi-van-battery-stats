@@ -21,10 +21,7 @@ module.exports = {
       if (movement) {
         const fileName = `./camera/${new Date().toISOString()}.jpg`;
 
-        const l = execSync(
-          `libcamera-still -o ${fileName} --width 2028 --height 1520`
-        ).toString();
-        console.log(l);
+        execSync(`libcamera-still -o ${fileName} --width 2028 --height 1520`);
 
         onMovement(fileName);
       }
@@ -39,10 +36,7 @@ module.exports = {
   picture: () => {
     const fileName = `./camera/${new Date().toISOString()}.jpg`;
 
-    const l = execSync(
-      `libcamera-still -o ${fileName} --width 2028 --height 1520`
-    ).toString();
-    console.log(l);
+    execSync(`libcamera-still -o ${fileName} --width 2028 --height 1520`);
 
     return fileName;
   },

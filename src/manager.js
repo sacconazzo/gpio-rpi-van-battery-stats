@@ -56,6 +56,7 @@ const share = async () => {
         execSync("vcgencmd measure_temp").toString().split("=")[1].split("'")[0]
       ),
     };
+
     const [dayWeek] = await db.raw(
       `SELECT\
         date(CONVERT_TZ(timestamp, 'UTC', '${process.env.DB_TIMEZONE}')) AS day,\
@@ -80,6 +81,7 @@ const share = async () => {
       GROUP BY\
         day;`
     );
+
     const [realtime] = await db.raw(
       `SELECT\
         CONVERT_TZ(timestamp, 'UTC', '${process.env.DB_TIMEZONE}') as timestamp,\
@@ -97,6 +99,7 @@ const share = async () => {
         id ASC\
       LIMIT 500;`
     );
+
     const data = {
       system,
       dayWeek,
@@ -107,8 +110,11 @@ const share = async () => {
         "x-giona-tech": apiToken,
       },
     });
+
     console.log("stored data");
+
     pulseConnection.servoWrite(pulseWidth);
+
     telegram.start();
   } catch (e) {
     console.log(e.message);
@@ -173,6 +179,7 @@ const logger = winston.createLogger({
     }),
   ],
 });
+
 // Sovrascrive tutti i metodi di console
 ["log", "error", "warn", "info"].forEach((method) => {
   console[method] = (m) => logger.info(m); // Inoltra gli argomenti al metodo corrispondente del logger di Winston
