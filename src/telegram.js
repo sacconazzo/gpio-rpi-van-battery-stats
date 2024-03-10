@@ -43,10 +43,10 @@ bot.use(isAuthorized);
 bot.command("billy", async (ctx) => {
   // Invia la foto al chatId del mittente
   try {
-    const source = campera.picture();
+    const source = await campera.picture();
 
     await ctx.replyWithPhoto({ source });
-    campera.delete(source);
+    await campera.delete(source);
 
     console.log("Picture required");
   } catch (e) {
@@ -60,7 +60,7 @@ bot.command("motion_on", async (ctx) => {
       onMovement: async (source) => {
         // Invia la foto alla chat abilitata
         await bot.telegram.sendPhoto(chatEnabled[0], { source });
-        campera.delete(source);
+        await campera.delete(source);
 
         console.log("Motion detected");
       },

@@ -1,4 +1,6 @@
 const Gpio = require("pigpio").Gpio;
+const util = require("util");
+const exec = util.promisify(require("child_process").exec);
 const { execSync } = require("child_process");
 
 const pinVCC = 26;
@@ -9,24 +11,24 @@ const movementSensor = new Gpio(pinMovement, { mode: Gpio.INPUT });
 
 let startInterval;
 
-const shot = (fileName) => {
-  execSync(
+const shot = async (fileName) => {
+  await exec(
     `libcamera-still -o ${fileName}day --width 2028 --height 1520 --immediate`
   );
   const sizeDay = Number(
     execSync(`stat ${fileName}day | grep Size`).toString().split(" ")[3]
   );
 
-  execSync(
+  await exec(
     `libcamera-still -o ${fileName}night --width 2028 --height 1520 --shutter 5000000 --gain 3 --immediate`
   );
   const sizeNight = Number(
     execSync(`stat ${fileName}night | grep Size`).toString().split(" ")[3]
   );
 
-  execSync(`rm ${fileName}${sizeDay < sizeNight ? "day" : "night"}`);
+  await exec(`rm ${fileName}${sizeDay < sizeNight ? "day" : "night"}`);
 
-  execSync(
+  await exec(
     `mv ${fileName}${sizeDay < sizeNight ? "night" : "day"} ${fileName}`
   );
 };
@@ -37,14 +39,14 @@ module.exports = {
 
     movementVCC.digitalWrite(1);
 
-    startInterval = setInterval(() => {
+    startInterval = setInterval(async () => {
       try {
         const movement = movementSensor.digitalRead();
 
         if (movement) {
           const fileName = `./camera/${new Date().toISOString()}.jpg`;
 
-          shot(fileName);
+          await shot(fileName);
 
           onMovement(fileName);
         }
@@ -60,13 +62,15 @@ module.exports = {
     clearInterval(startInterval);
   },
 
-  picture: ({ fileName = `./camera/${new Date().toISOString()}.jpg` } = {}) => {
-    shot(fileName);
+  picture: async ({
+    fileName = `./camera/${new Date().toISOString()}.jpg`,
+  } = {}) => {
+    await shot(fileName);
 
     return fileName;
   },
 
-  delete: (file) => {
-    execSync(`rm ${file}`);
+  delete: async (file) => {
+    return exec(`rm ${file}`);
   },
 };
