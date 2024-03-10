@@ -13,16 +13,16 @@ const shot = (fileName) => {
   execSync(
     `libcamera-still -o ${fileName}day --width 2028 --height 1520 --immediate`
   );
-  const sizeDay = execSync(`stat ${fileName}day | grep size`)
-    .toString()
-    .split(" ")[1];
+  const sizeDay = Number(
+    execSync(`stat ${fileName}day | grep Size`).toString().split(" ")[3]
+  );
 
   execSync(
     `libcamera-still -o ${fileName}night --width 2028 --height 1520 --shutter 5000000 --gain 1 --immediate`
   );
-  const sizeNight = execSync(`stat ${fileName}night | grep size`)
-    .toString()
-    .split(" ")[1];
+  const sizeNight = Number(
+    execSync(`stat ${fileName}night | grep Size`).toString().split(" ")[3]
+  );
 
   execSync(`rm ${fileName}${sizeDay < sizeNight ? "day" : "night"}`);
 
