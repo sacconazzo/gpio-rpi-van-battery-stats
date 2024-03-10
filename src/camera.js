@@ -12,14 +12,14 @@ const movementSensor = new Gpio(pinMovement, { mode: Gpio.INPUT });
 let startInterval;
 
 const shot = async (fileName) => {
-  await exec(
+  execSync(
     `libcamera-still -o ${fileName}day --width 2028 --height 1520 --immediate`
   );
   const sizeDay = Number(
     execSync(`stat ${fileName}day | grep Size`).toString().split(" ")[3]
   );
 
-  await exec(
+  execSync(
     `libcamera-still -o ${fileName}night --width 2028 --height 1520 --shutter 5000000 --gain 3 --immediate`
   );
   const sizeNight = Number(
