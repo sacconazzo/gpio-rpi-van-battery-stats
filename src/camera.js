@@ -9,6 +9,28 @@ const movementSensor = new Gpio(pinMovement, { mode: Gpio.INPUT });
 
 let startInterval;
 
+const shot = (fileName) => {
+  execSync(
+    `libcamera-still -o ${fileName}day --width 2028 --height 1520 --immediate`
+  );
+  const sizeDay = execSync(`stat ${fileName}day | grep size`)
+    .toString()
+    .split(" ")[1];
+
+  execSync(
+    `libcamera-still -o ${fileName}night --width 2028 --height 1520 --shutter 5000000 --gain 1 --immediate`
+  );
+  const sizeNight = execSync(`stat ${fileName}night | grep size`)
+    .toString()
+    .split(" ")[1];
+
+  execSync(`rm ${fileName}${sizeDay < sizeNight ? "day" : "night"}`);
+
+  execSync(
+    `mv ${fileName}${sizeDay < sizeNight ? "night" : "day"} ${fileName}`
+  );
+};
+
 module.exports = {
   start: ({ onMovement = (f) => console.log(`created: ${f}`) }) => {
     clearInterval(startInterval);
@@ -22,9 +44,7 @@ module.exports = {
         if (movement) {
           const fileName = `./camera/${new Date().toISOString()}.jpg`;
 
-          execSync(
-            `libcamera-still -o ${fileName} --width 2028 --height 1520 --shutter 1000000 --gain 1 --immediate`
-          );
+          shot(fileName);
 
           onMovement(fileName);
         }
@@ -41,9 +61,7 @@ module.exports = {
   },
 
   picture: ({ fileName = `./camera/${new Date().toISOString()}.jpg` } = {}) => {
-    execSync(
-      `libcamera-still -o ${fileName} --width 2028 --height 1520 --shutter 1000000 --gain 1 --immediate`
-    );
+    shot(fileName);
 
     return fileName;
   },
