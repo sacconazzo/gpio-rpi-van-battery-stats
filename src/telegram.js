@@ -54,7 +54,7 @@ bot.command("billy", async (ctx) => {
   }
 });
 
-bot.command("movement_on", async (ctx) => {
+bot.command("motion_on", async (ctx) => {
   try {
     campera.start({
       onMovement: async (source) => {
@@ -62,25 +62,25 @@ bot.command("movement_on", async (ctx) => {
         await bot.telegram.sendPhoto(chatEnabled[0], { source });
         campera.delete(source);
 
-        console.log("Movement received");
+        console.log("Motion detected");
       },
     });
 
-    await ctx.reply("Sensor movement ON");
+    await ctx.reply("Motion sensor ON");
 
-    console.log("Sensor movement ON");
+    console.log("Motion sensor ON");
   } catch (e) {
     console.error(e);
   }
 });
 
-bot.command("movement_off", async (ctx) => {
+bot.command("motion_off", async (ctx) => {
   try {
     campera.stop();
 
-    await ctx.reply("Sensor movement OFF");
+    await ctx.reply("Motion sensor OFF");
 
-    console.log("Sensor movement OFF");
+    console.log("Motion sensor OFF");
   } catch (e) {
     console.error(e);
   }

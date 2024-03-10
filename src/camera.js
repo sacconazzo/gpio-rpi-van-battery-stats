@@ -23,7 +23,7 @@ module.exports = {
           const fileName = `./camera/${new Date().toISOString()}.jpg`;
 
           execSync(
-            `libcamera-still -o ${fileName} --width 2028 --height 1520 --shutter 5000000 --gain 1 --immediate`
+            `libcamera-still -o ${fileName} --width 2028 --height 1520 --shutter 1000000 --gain 1 --immediate`
           );
 
           onMovement(fileName);
@@ -35,15 +35,14 @@ module.exports = {
   },
 
   stop: () => {
-    clearInterval(startInterval);
     movementVCC.digitalWrite(0);
+
+    clearInterval(startInterval);
   },
 
-  picture: () => {
-    const fileName = `./camera/${new Date().toISOString()}.jpg`;
-
+  picture: ({ fileName = `./camera/${new Date().toISOString()}.jpg` } = {}) => {
     execSync(
-      `libcamera-still -o ${fileName} --width 2028 --height 1520 --shutter 5000000 --gain 1 --immediate`
+      `libcamera-still -o ${fileName} --width 2028 --height 1520 --shutter 1000000 --gain 1 --immediate`
     );
 
     return fileName;
