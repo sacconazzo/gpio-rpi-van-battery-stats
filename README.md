@@ -25,7 +25,17 @@
 
 ### Hardware
 
-long to explain... I will do it :)
+#### Sensors and ADC
+
+<img src="res/scheme/sensors.png" alt="Sensors" width="90%" />
+
+[Scheme](res/scheme/sensors.pdf)
+
+#### Leds and buttons
+
+I will do that too :)
+
+#### Pictures
 
 <img src="res/img/breadboard-completed-1.jpg" alt="BreadBoard completed" width="48%"/> <img src="res/img/breadboard-completed-2.jpg" alt="RPI4 completed" width="48%"/>
 
