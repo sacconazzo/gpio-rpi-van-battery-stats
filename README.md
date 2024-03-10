@@ -27,9 +27,7 @@
 
 #### Sensors and ADC
 
-<img src="res/scheme/sensors.png" alt="Sensors" width="90%" />
-
-[Scheme](res/scheme/sensors.pdf)
+<img src="res/scheme/sensors.png" alt="Sensors" />
 
 #### Leds and buttons
 
