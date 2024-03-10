@@ -51,7 +51,7 @@ module.exports = {
       } catch (e) {
         console.error(e);
       }
-    }, 4000);
+    }, 10000);
   },
 
   stop: () => {
