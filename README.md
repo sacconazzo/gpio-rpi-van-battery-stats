@@ -31,7 +31,7 @@
 
 #### Leds and buttons
 
-I will do that too :)
+<img src="res/scheme/leds_buttons.png" alt="Leds ad Buttons" width="48%" />
 
 #### Pictures
 
