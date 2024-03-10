@@ -18,7 +18,7 @@ const shot = (fileName) => {
   );
 
   execSync(
-    `libcamera-still -o ${fileName}night --width 2028 --height 1520 --shutter 5000000 --gain 1 --immediate`
+    `libcamera-still -o ${fileName}night --width 2028 --height 1520 --shutter 5000000 --gain 3 --immediate`
   );
   const sizeNight = Number(
     execSync(`stat ${fileName}night | grep Size`).toString().split(" ")[3]
