@@ -15,16 +15,16 @@ const shot = async (fileName) => {
   execSync(
     `libcamera-still -o ${fileName}day --width 2028 --height 1520 --immediate`
   );
-  const sizeDay = Number(
-    execSync(`stat ${fileName}day | grep Size`).toString().split(" ")[3]
-  );
+  const { stdout: sizeDayRow } = await exec(`stat ${fileName}day | grep Size`);
+  const sizeDay = Number(sizeDayRow.split(" ")[3]);
 
   execSync(
     `libcamera-still -o ${fileName}night --width 2028 --height 1520 --shutter 5000000 --gain 3 --immediate`
   );
-  const sizeNight = Number(
-    execSync(`stat ${fileName}night | grep Size`).toString().split(" ")[3]
+  const { stdout: sizeNightRow } = await exec(
+    `stat ${fileName}night | grep Size`
   );
+  const sizeNight = Number(sizeNightRow.split(" ")[3]);
 
   await exec(`rm ${fileName}${sizeDay < sizeNight ? "day" : "night"}`);
 
