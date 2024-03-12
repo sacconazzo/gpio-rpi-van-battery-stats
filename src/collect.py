@@ -42,7 +42,7 @@ def gpio(sc, start_time):
         value = row[1] 
         settings[key] = value
 
-    vref = float(settings.get("POWER_SUPPLY", os.getenv("POWER_SUPPLY"))) # VCC
+    vref = float(settings.get("VREF", os.getenv("VREF"))) # VCC
     offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # noisy
     offsetV1 = float(settings.get("OFFSET_V1", os.getenv("OFFSET_V1"))) # noisy
     offsetV2 = float(settings.get("OFFSET_V2", os.getenv("OFFSET_V2"))) # noisy
