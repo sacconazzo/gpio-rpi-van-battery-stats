@@ -21,28 +21,40 @@ bt0 = MCP3008(7)
 
 pot0 = PWMLED(14)
 
-offsetV0 = float(os.getenv("OFFSET_V0")) # noisy
-offsetV1 = float(os.getenv("OFFSET_V1")) # noisy
-offsetV2 = float(os.getenv("OFFSET_V2")) # noisy
-coeffV0 = float(os.getenv("COEFF_V0")) # 3.3 * (R1 + R2) / R2
-coeffV1 = float(os.getenv("COEFF_V1")) # 3.3 * (R1 + R2) / R2
-coeffV2 = float(os.getenv("COEFF_V2")) # 3.3 * (R1 + R2) / R2
-offsetA1 = float(os.getenv("OFFSET_A1")) # -0.5 + noisy
-offsetA2 = float(os.getenv("OFFSET_A2")) # -0.5 + noisy
-coeffA1 = float(os.getenv("COEFF_A1")) # 3.3 * 1000 / mV/A -> sensitivity
-coeffA2 = float(os.getenv("COEFF_A2")) # 3.3 * 1000 / mV/A -> sensitivity
+mydb = mysql.connector.connect(
+  host = os.getenv("DB_HOST"),
+  user = os.getenv("DB_USER"),
+  password = os.getenv("DB_PASSWORD"),
+  database = os.getenv("DB_DATABASE"),
+  time_zone = os.getenv("DB_TIMEZONE")
+)
+mycursor = mydb.cursor()
+
+mycursor.execute("SELECT key, value FROM settings")
+rows = mycursor.fetchall()
+
+mycursor.close()
+mydb.close()
+
+settings = {}
+for row in rows:
+    key = row[0]  
+    value = row[1] 
+    settings[key] = value
+
+offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # noisy
+offsetV1 = float(settings.get("OFFSET_V1", os.getenv("OFFSET_V1"))) # noisy
+offsetV2 = float(settings.get("OFFSET_V2", os.getenv("OFFSET_V2"))) # noisy
+coeffV0 = float(settings.get("COEFF_V0", os.getenv("COEFF_V0"))) # 3.3 * (R1 + R2) / R2
+coeffV1 = float(settings.get("COEFF_V1", os.getenv("COEFF_V1"))) # 3.3 * (R1 + R2) / R2
+coeffV2 = float(settings.get("COEFF_V2", os.getenv("COEFF_V2"))) # 3.3 * (R1 + R2) / R2
+offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # -0.5 + noisy
+offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # -0.5 + noisy
+coeffA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # 3.3 * 1000 / mV/A -> sensitivity
+coeffA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # 3.3 * 1000 / mV/A -> sensitivity
 
 def gpio(sc, start_time):
     pot0.value = 0.1
-
-    mydb = mysql.connector.connect(
-      host = os.getenv("DB_HOST"),
-      user = os.getenv("DB_USER"),
-      password = os.getenv("DB_PASSWORD"),
-      database = os.getenv("DB_DATABASE"),
-      time_zone = os.getenv("DB_TIMEZONE")
-    )
-    mycursor = mydb.cursor()
 
     interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # da 10 a 60 sec in base a potenziometro
     snapshots = int(round(interval * 10 * 0.8, 0))
@@ -69,38 +81,41 @@ def gpio(sc, start_time):
         dn0 = dn0 + du0.value
         time.sleep(0.1)
 
+    mydb = mysql.connector.connect(
+      host = os.getenv("DB_HOST"),
+      user = os.getenv("DB_USER"),
+      password = os.getenv("DB_PASSWORD"),
+      database = os.getenv("DB_DATABASE"),
+      time_zone = os.getenv("DB_TIMEZONE")
+    )
+    mycursor = mydb.cursor()
+
     sql = "INSERT INTO `adc-snaps` (signal0, signal1, signal2, signal3, signal4, signal5, signal6, signal7) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     values = (vn0 / snapshots, vn2 / snapshots, vn1 / snapshots, vol.value, dn0 / snapshots, an1 / snapshots, an2 / snapshots, tn0 / snapshots)
     mycursor.execute(sql, values)
     mydb.commit()
 
     v0 = ((vn0 / snapshots) + offsetV0) * coeffV0
-    print("v0: "+str(vn0 / snapshots))
     if v0 < 0:
       v0 = 0
 
     v1 = ((vn1 / snapshots) + offsetV1) * coeffV1
-    print("v1: "+str(vn1 / snapshots))
     if v1 < 0:
       v1 = 0
 
     v2 = ((vn2 / snapshots) + offsetV2) * coeffV2
-    print("v2: "+str(vn2 / snapshots))
     if v2 < 0:
       v2 = 0
 
     a1 = ((an1 / snapshots) + offsetA1) * coeffA1
-    print("a1: "+str(an1 / snapshots))
     if (an1 / snapshots) < 0.05:
       a1 = 0
 
     a2 = ((an2 / snapshots) + offsetA2) * coeffA2
-    print("a2: "+str(an2 / snapshots))
     if (an2 / snapshots) < 0.05:
       a2 = 0
 
     t0 = tn0 / snapshots
-    print("t0: "+str(t0))
 
     # Voltage Divider
     Vin = 3.3
@@ -132,6 +147,9 @@ def gpio(sc, start_time):
     values = (v0, v1, v2, a1, a2, interval / 60 / 60, t0C)
     mycursor.execute(sql, values)
     mydb.commit()
+
+    mycursor.close()
+    mydb.close()
     
     pot0.value = 0
 
