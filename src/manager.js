@@ -36,13 +36,11 @@ pulseConnection.digitalWrite(0);
 const buttonReboot = new Gpio(pinReboot, {
   mode: Gpio.INPUT,
   pullUpDown: Gpio.PUD_DOWN,
-  edge: Gpio.EITHER_EDGE,
 });
 
 const buttonShutDown = new Gpio(pinShutDown, {
   mode: Gpio.INPUT,
   pullUpDown: Gpio.PUD_DOWN,
-  edge: Gpio.EITHER_EDGE,
 });
 
 // SHARE
@@ -130,6 +128,7 @@ share();
 // BUTTONS
 if (process.env.ENABLE_BUTTONS === "true") {
   let waitReboot;
+  buttonReboot.enableInterrupt(Gpio.EITHER_EDGE);
   buttonReboot.glitchFilter(10000);
   buttonReboot.on("interrupt", function (level) {
     if (level) {
@@ -141,9 +140,10 @@ if (process.env.ENABLE_BUTTONS === "true") {
       clearTimeout(waitReboot);
     }
   });
-  buttonShutDown.glitchFilter(10000);
 
   let waitPowerOff;
+  buttonShutDown.enableInterrupt(Gpio.EITHER_EDGE);
+  buttonShutDown.glitchFilter(10000);
   buttonShutDown.on("interrupt", function (level) {
     if (level) {
       clearTimeout(waitPowerOff);
