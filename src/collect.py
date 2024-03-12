@@ -30,7 +30,7 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 
-mycursor.execute("SELECT key, value FROM settings")
+mycursor.execute("SELECT `key`, `value` FROM settings")
 rows = mycursor.fetchall()
 
 mycursor.close()
