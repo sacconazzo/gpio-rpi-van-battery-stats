@@ -11,12 +11,14 @@ import logging
 load_dotenv()
 
 bmv = MCP3008(0)
-b1v = MCP3008(2)
 b2v = MCP3008(1)
+b1v = MCP3008(2)
 vol = MCP3008(3)
+du0 = MCP3008(4) # empty channel 
 b1c = MCP3008(5)
 b2c = MCP3008(6)
 bt0 = MCP3008(7)
+
 pot0 = PWMLED(14)
 
 offsetV0 = float(os.getenv("OFFSET_V0")) # noisy
@@ -33,6 +35,15 @@ coeffA2 = float(os.getenv("COEFF_A2")) # 3.3 * 1000 / mV/A -> sensitivity
 def gpio(sc, start_time):
     pot0.value = 0.1
 
+    mydb = mysql.connector.connect(
+      host = os.getenv("DB_HOST"),
+      user = os.getenv("DB_USER"),
+      password = os.getenv("DB_PASSWORD"),
+      database = os.getenv("DB_DATABASE"),
+      time_zone = os.getenv("DB_TIMEZONE")
+    )
+    mycursor = mydb.cursor()
+
     interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # da 10 a 60 sec in base a potenziometro
     snapshots = int(round(interval * 10 * 0.8, 0))
 
@@ -47,6 +58,7 @@ def gpio(sc, start_time):
     an1 = 0
     an2 = 0
     tn0 = 0
+    dn0 = 0
     for lp in range(snapshots):
         vn0 = vn0 + bmv.value
         vn1 = vn1 + b1v.value
@@ -54,7 +66,13 @@ def gpio(sc, start_time):
         an1 = an1 + b1c.value
         an2 = an2 + b2c.value
         tn0 = tn0 + bt0.value
+        dn0 = dn0 + du0.value
         time.sleep(0.1)
+
+    sql = "INSERT INTO `adc-snaps` (signal0, signal1, signal2, signal3, signal4, signal5, signal6, signal7) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    values = (vn0 / snapshots, vn2 / snapshots, vn1 / snapshots, vol.value, dn0 / snapshots, an1 / snapshots, an2 / snapshots, tn0 / snapshots)
+    mycursor.execute(sql, values)
+    mydb.commit()
 
     v0 = ((vn0 / snapshots) + offsetV0) * coeffV0
     print("v0: "+str(vn0 / snapshots))
@@ -109,21 +127,10 @@ def gpio(sc, start_time):
     t0C = t0K - 273.15
 
     print("Collected data of " + str(snapshots) + " snapshots")
-    
-    mydb = mysql.connector.connect(
-      host = os.getenv("DB_HOST"),
-      user = os.getenv("DB_USER"),
-      password = os.getenv("DB_PASSWORD"),
-      database = os.getenv("DB_DATABASE"),
-      time_zone = os.getenv("DB_TIMEZONE")
-    )
-
-    mycursor = mydb.cursor()
 
     sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff, temperature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     values = (v0, v1, v2, a1, a2, interval / 60 / 60, t0C)
     mycursor.execute(sql, values)
-
     mydb.commit()
     
     pot0.value = 0
