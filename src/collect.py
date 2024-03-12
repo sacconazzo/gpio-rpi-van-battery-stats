@@ -42,6 +42,7 @@ def gpio(sc, start_time):
         value = row[1] 
         settings[key] = value
 
+    supply = float(settings.get("POWER_SUPPLY", os.getenv("POWER_SUPPLY"))) # V supply
     offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # noisy
     offsetV1 = float(settings.get("OFFSET_V1", os.getenv("OFFSET_V1"))) # noisy
     offsetV2 = float(settings.get("OFFSET_V2", os.getenv("OFFSET_V2"))) # noisy
@@ -106,7 +107,7 @@ def gpio(sc, start_time):
     t0 = tn0 / snapshots
 
     # Voltage Divider
-    Vin = 3.3
+    Vin = supply
     Ro = 10000  # 10k Resistor
 
     # Steinhart Constants
@@ -114,7 +115,7 @@ def gpio(sc, start_time):
     B = 0.000234125
     C = 0.0000000876741
     
-    Vout = 3.3 * t0
+    Vout = supply * t0
     
     # Calculate Resistance
     Rt = (Vout * Ro) / (Vin - Vout) 
