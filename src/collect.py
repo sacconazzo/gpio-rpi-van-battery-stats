@@ -78,7 +78,7 @@ def gpio(sc, start_time):
         dn0 = dn0 + du0.value
         time.sleep(0.1)
 
-    sql = "INSERT INTO `adc-snaps` (signal0, signal1, signal2, signal3, signal4, signal5, signal6, signal7) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = "INSERT INTO `adc-snaps` (ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     values = (vn0 / snapshots, vn2 / snapshots, vn1 / snapshots, vol.value, dn0 / snapshots, an1 / snapshots, an2 / snapshots, tn0 / snapshots)
     mycursor.execute(sql, values)
     mydb.commit()
