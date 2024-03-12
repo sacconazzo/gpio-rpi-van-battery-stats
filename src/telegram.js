@@ -58,11 +58,15 @@ bot.command("motion_on", async (ctx) => {
   try {
     campera.start({
       onMovement: async (source) => {
-        // Invia la foto alla chat abilitata
-        await bot.telegram.sendPhoto(chatEnabled[0], { source });
-        await campera.delete(source);
+        try {
+          // Invia la foto alla chat abilitata
+          await bot.telegram.sendPhoto(chatEnabled[0], { source });
+          await campera.delete(source);
 
-        console.log("Motion detected");
+          console.log("Motion detected");
+        } catch (e) {
+          console.error(e);
+        }
       },
     });
 
