@@ -42,17 +42,17 @@ def gpio(sc, start_time):
         value = row[1] 
         settings[key] = value
 
-    supply = float(settings.get("POWER_SUPPLY", os.getenv("POWER_SUPPLY"))) # V supply
+    vref = float(settings.get("POWER_SUPPLY", os.getenv("POWER_SUPPLY"))) # VCC
     offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # noisy
     offsetV1 = float(settings.get("OFFSET_V1", os.getenv("OFFSET_V1"))) # noisy
     offsetV2 = float(settings.get("OFFSET_V2", os.getenv("OFFSET_V2"))) # noisy
-    coeffV0 = float(settings.get("COEFF_V0", os.getenv("COEFF_V0"))) # 3.3 * (R1 + R2) / R2
-    coeffV1 = float(settings.get("COEFF_V1", os.getenv("COEFF_V1"))) # 3.3 * (R1 + R2) / R2
-    coeffV2 = float(settings.get("COEFF_V2", os.getenv("COEFF_V2"))) # 3.3 * (R1 + R2) / R2
-    offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # -0.5 + noisy
-    offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # -0.5 + noisy
-    coeffA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # 3.3 * 1000 / mV/A -> sensitivity
-    coeffA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # 3.3 * 1000 / mV/A -> sensitivity
+    coeffV0 = float(settings.get("COEFF_V0", os.getenv("COEFF_V0"))) # (R1 + R2) / R2
+    coeffV1 = float(settings.get("COEFF_V1", os.getenv("COEFF_V1"))) # (R1 + R2) / R2
+    coeffV2 = float(settings.get("COEFF_V2", os.getenv("COEFF_V2"))) # (R1 + R2) / R2
+    offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # basically -0.5 + noisy
+    offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically -0.5 + noisy
+    coeffA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity
+    coeffA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity
 
     interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # da 10 a 60 sec in base a potenziometro
     snapshots = int(round(interval * 10 * 0.8, 0))
@@ -84,30 +84,30 @@ def gpio(sc, start_time):
     mycursor.execute(sql, values)
     mydb.commit()
 
-    v0 = ((vn0 / snapshots) + offsetV0) * coeffV0
+    v0 = ((vn0 / snapshots) + offsetV0) * vref * coeffV0
     if v0 < 0:
       v0 = 0
 
-    v1 = ((vn1 / snapshots) + offsetV1) * coeffV1
+    v1 = ((vn1 / snapshots) + offsetV1) * vref * coeffV1
     if v1 < 0:
       v1 = 0
 
-    v2 = ((vn2 / snapshots) + offsetV2) * coeffV2
+    v2 = ((vn2 / snapshots) + offsetV2) * vref * coeffV2
     if v2 < 0:
       v2 = 0
 
-    a1 = ((an1 / snapshots) + offsetA1) * coeffA1
+    a1 = ((an1 / snapshots) + offsetA1) * vref * coeffA1
     if (an1 / snapshots) < 0.05:
       a1 = 0
 
-    a2 = ((an2 / snapshots) + offsetA2) * coeffA2
+    a2 = ((an2 / snapshots) + offsetA2) * vref * coeffA2
     if (an2 / snapshots) < 0.05:
       a2 = 0
 
     t0 = tn0 / snapshots
 
     # Voltage Divider
-    Vin = supply
+    Vin = vref
     Ro = 10000  # 10k Resistor
 
     # Steinhart Constants
@@ -115,7 +115,7 @@ def gpio(sc, start_time):
     B = 0.000234125
     C = 0.0000000876741
     
-    Vout = supply * t0
+    Vout = vref * t0
     
     # Calculate Resistance
     Rt = (Vout * Ro) / (Vin - Vout) 
