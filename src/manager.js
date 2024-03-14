@@ -170,32 +170,32 @@ if (process.env.ENABLE_BUTTONS === "true") {
 const logger = winston.createLogger({
   transports: [
     new winston.transports.File({
-      filename: "logs.log", // Il nome del file in cui salvare i log
-      level: "info", // Il livello minimo di log da registrare
+      filename: "logs.log",
+      level: "info", // log level
       format: winston.format.combine(
-        winston.format.timestamp(), // Aggiunge timestamp ai log
-        winston.format.json() // Formato JSON per i log
+        winston.format.timestamp(), // add timestamp
+        winston.format.json()
       ),
     }),
   ],
 });
 
-// Sovrascrive tutti i metodi di console
+// override console methods
 ["log", "error", "warn", "info"].forEach((method) => {
-  console[method] = (m) => logger[method === "log" ? "info" : method](m); // Inoltra gli argomenti al metodo corrispondente del logger di Winston
+  console[method] = (m) => logger[method === "log" ? "info" : method](m);
 });
 
 // END OF PROCESS
 const cleanupAndExit = () => {
-  buttonReboot.disableInterrupt(); // Disabilita gli interrupt prima di uscire
+  buttonReboot.disableInterrupt(); // Disable interrupt
   buttonShutDown.disableInterrupt();
-  pwmShare.hardwarePwmWrite(0, 0); // Spegni i LED rilascia il GPIO
+  pwmShare.hardwarePwmWrite(0, 0); // turn off leds
   pulseConnection.digitalWrite(0);
   pulsePress.digitalWrite(0);
   telegram.stop();
   process.exit();
 };
 
-// Gestione della terminazione del processo
+// end of process events
 process.on("SIGINT", cleanupAndExit);
 process.on("SIGTERM", cleanupAndExit);

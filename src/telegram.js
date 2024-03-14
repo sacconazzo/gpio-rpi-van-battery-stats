@@ -4,14 +4,14 @@ const { Telegraf } = require("telegraf");
 const { exec } = require("child_process");
 const campera = require("./camera");
 
-// Token del bot Telegram fornito da BotFather
+// Token bot Telegram from BotFather
 const token = process.env.TELEGRAM_TOKEN;
 const chatEnabled = (process.env.TELEGRAM_CHATS || "").split(",");
 const bot = new Telegraf(token);
 
 let isStarted = false;
 
-// Ascolta il comando /start dal bot Telegram
+// Start command
 bot.start(async (ctx) => {
   try {
     await ctx.reply("😱");
@@ -37,11 +37,9 @@ const isAuthorized = async (ctx, next) => {
   }
 };
 
-// Ascolta i comandi
 bot.use(isAuthorized);
 
 bot.command("billy", async (ctx) => {
-  // Invia la foto al chatId del mittente
   try {
     const source = await campera.picture();
 
@@ -59,7 +57,6 @@ bot.command("motion_on", async (ctx) => {
     campera.start({
       onMovement: async (source) => {
         try {
-          // Invia la foto alla chat abilitata
           await bot.telegram.sendPhoto(chatEnabled[0], { source });
           await campera.delete(source);
 
