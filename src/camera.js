@@ -25,7 +25,7 @@ const shot = async (fileName) => {
 
   const opt =
     lux < 0.1
-      ? lux < 0.025
+      ? lux < 0.024
         ? "--shutter 5000000 --gain 30"
         : "--shutter 5000000 --gain 3"
       : "";
