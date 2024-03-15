@@ -2,6 +2,7 @@ const Gpio = require("pigpio").Gpio;
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 const { execSync } = require("child_process");
+const db = require("./db");
 
 const pinVCC = 26;
 const pinMovement = 20;
@@ -12,24 +13,20 @@ const movementSensor = new Gpio(pinMovement, { mode: Gpio.INPUT });
 let startInterval;
 
 const shot = async (fileName) => {
-  execSync(
-    `libcamera-still -o ${fileName}day --width 2028 --height 1520 --immediate`
+  const [realtime] = await db.raw(
+    `SELECT\
+      ch4 as lux\
+    FROM\
+    \`adc-snaps\`\
+    ORDER BY\
+      id DESC\
+    LIMIT 1;`
   );
-  const { stdout: sizeDayRow } = await exec(`stat ${fileName}day | grep Size`);
-  const sizeDay = Number(sizeDayRow.split(" ")[3]);
+
+  const opt = realtime.lux < 0.1 ? "--shutter 5000000 --gain 3" : "";
 
   execSync(
-    `libcamera-still -o ${fileName}night --width 2028 --height 1520 --shutter 5000000 --gain 3 --immediate`
-  );
-  const { stdout: sizeNightRow } = await exec(
-    `stat ${fileName}night | grep Size`
-  );
-  const sizeNight = Number(sizeNightRow.split(" ")[3]);
-
-  await exec(`rm ${fileName}${sizeDay < sizeNight ? "day" : "night"}`);
-
-  await exec(
-    `mv ${fileName}${sizeDay < sizeNight ? "night" : "day"} ${fileName}`
+    `libcamera-still -o ${fileName} --width 2028 --height 1520 ${opt} --immediate`
   );
 };
 
