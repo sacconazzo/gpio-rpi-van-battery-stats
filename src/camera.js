@@ -13,7 +13,7 @@ const movementSensor = new Gpio(pinMovement, { mode: Gpio.INPUT });
 let startInterval;
 
 const shot = async (fileName) => {
-  const [realtime] = await db.raw(
+  const [[{ lux }]] = await db.raw(
     `SELECT\
       ch4 as lux\
     FROM\
@@ -23,7 +23,12 @@ const shot = async (fileName) => {
     LIMIT 1;`
   );
 
-  const opt = realtime.lux < 0.1 ? "--shutter 5000000 --gain 3" : "";
+  const opt =
+    lux < 0.1
+      ? lux < 0.025
+        ? "--shutter 10000000 --gain 5"
+        : "--shutter 5000000 --gain 3"
+      : "";
 
   execSync(
     `libcamera-still -o ${fileName} --width 2028 --height 1520 ${opt} --immediate`
