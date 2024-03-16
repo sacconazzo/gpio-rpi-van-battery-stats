@@ -43,16 +43,17 @@ def gpio(sc, start_time):
         settings[key] = value
 
     vref = float(settings.get("VREF", os.getenv("VREF"))) # VCC
+    tref = float(settings.get("TREF", os.getenv("TREF"))) # temperature ref for current sensor
     offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # offset adj.
     offsetV1 = float(settings.get("OFFSET_V1", os.getenv("OFFSET_V1"))) # offset adj.
     offsetV2 = float(settings.get("OFFSET_V2", os.getenv("OFFSET_V2"))) # offset adj.
     coeffV0 = float(settings.get("COEFF_V0", os.getenv("COEFF_V0"))) # (R1 + R2) / R2
     coeffV1 = float(settings.get("COEFF_V1", os.getenv("COEFF_V1"))) # (R1 + R2) / R2
     coeffV2 = float(settings.get("COEFF_V2", os.getenv("COEFF_V2"))) # (R1 + R2) / R2
-    offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # basically -0.5 + offset adj. at 20°C
-    offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically -0.5 + offset adj. at 20°C
-    sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity at 20°C
-    sensitA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity at 20°C
+    offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # basically -0.5 + offset adj. at TREF
+    offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically -0.5 + offset adj. at TREF
+    sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity at TREF
+    sensitA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity at TREF
     driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # temp. drift per degree ref. to offset
     driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # temp. drift per degree ref. to offset
 
@@ -126,15 +127,15 @@ def gpio(sc, start_time):
     if v2 < 0:
       v2 = 0
 
-#   Current
-    offsetA1 = offsetA1 - ((20 - t0C) * driftA1) # temp. drift
+    # Current
+    if (t0C < tref):
+      offsetA1 = offsetA1 - ((tref - t0C) * driftA1) # temp. drift
+      offsetA2 = offsetA2 - ((tref - t0C) * driftA2) # temp. drift
 
     coeffA1 = sensitA1 / offsetA1 * -0.5 # adj. sensit with offset
     a1 = ((an1 / snapshots) + offsetA1) * vref * coeffA1
     if (an1 / snapshots) < 0.05:
       a1 = 0
-
-    offsetA2 = offsetA2 - ((20 - t0C) * driftA2) # temp. drift
 
     coeffA2 = sensitA2 / offsetA2 * -0.5 # adj. sensit with offset
     a2 = ((an2 / snapshots) + offsetA2) * vref * coeffA2
