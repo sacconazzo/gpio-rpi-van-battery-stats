@@ -50,8 +50,8 @@ def gpio(sc, start_time):
     coeffV0 = float(settings.get("COEFF_V0", os.getenv("COEFF_V0"))) # (R1 + R2) / R2
     coeffV1 = float(settings.get("COEFF_V1", os.getenv("COEFF_V1"))) # (R1 + R2) / R2
     coeffV2 = float(settings.get("COEFF_V2", os.getenv("COEFF_V2"))) # (R1 + R2) / R2
-    offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # basically -0.5 + offset adj. at TREF
-    offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically -0.5 + offset adj. at TREF
+    offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # basically 0.5 + offset adj. at TREF
+    offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically 0.5 + offset adj. at TREF
     sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity at TREF
     sensitA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity at TREF
     driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # temp. drift per degree ref. to offset
@@ -132,13 +132,13 @@ def gpio(sc, start_time):
       offsetA1 = offsetA1 - ((tref - t0C) * driftA1) # temp. drift
       offsetA2 = offsetA2 - ((tref - t0C) * driftA2) # temp. drift
 
-    coeffA1 = sensitA1 / offsetA1 * -0.5 # adj. sensit with offset
-    a1 = ((an1 / snapshots) + offsetA1) * vref * coeffA1
+    coeffA1 = sensitA1 / offsetA1 * 0.5 # adj. sensit with offset
+    a1 = ((an1 / snapshots) - offsetA1) * vref * coeffA1
     if (an1 / snapshots) < 0.05:
       a1 = 0
 
-    coeffA2 = sensitA2 / offsetA2 * -0.5 # adj. sensit with offset
-    a2 = ((an2 / snapshots) + offsetA2) * vref * coeffA2
+    coeffA2 = sensitA2 / offsetA2 * 0.5 # adj. sensit with offset
+    a2 = ((an2 / snapshots) - offsetA2) * vref * coeffA2
     if (an2 / snapshots) < 0.05:
       a2 = 0
 
