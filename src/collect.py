@@ -51,8 +51,8 @@ def gpio(sc, start_time):
     coeffV2 = float(settings.get("COEFF_V2", os.getenv("COEFF_V2"))) # (R1 + R2) / R2
     offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # basically -0.5 + offset adj.
     offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically -0.5 + offset adj.
-    coeffA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity
-    coeffA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity
+    sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity
+    sensitA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity
 
     interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # from 10 to 60 sec potentiometer source
     snapshots = int(round(interval * 10 * 0.8, 0))
@@ -96,10 +96,12 @@ def gpio(sc, start_time):
     if v2 < 0:
       v2 = 0
 
+    coeffA1 = sensitA1 / offsetA1 * -0.5 ## adj. sensit with offset
     a1 = ((an1 / snapshots) + offsetA1) * vref * coeffA1
     if (an1 / snapshots) < 0.05:
       a1 = 0
 
+    coeffA2 = sensitA2 / offsetA2 * -0.5 ## adj. sensit with offset
     a2 = ((an2 / snapshots) + offsetA2) * vref * coeffA2
     if (an2 / snapshots) < 0.05:
       a2 = 0
