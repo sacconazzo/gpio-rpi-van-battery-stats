@@ -14,7 +14,7 @@ bmv = MCP3008(0)
 b2v = MCP3008(1)
 b1v = MCP3008(2)
 vol = MCP3008(3)
-du0 = MCP3008(4) # empty channel 
+lu0 = MCP3008(4)
 b1c = MCP3008(5)
 b2c = MCP3008(6)
 bt0 = MCP3008(7)
@@ -68,7 +68,7 @@ def gpio(sc, start_time):
     an1 = 0
     an2 = 0
     tn0 = 0
-    dn0 = 0
+    ln0 = 0
     for lp in range(snapshots):
         vn0 = vn0 + bmv.value
         vn1 = vn1 + b1v.value
@@ -76,11 +76,11 @@ def gpio(sc, start_time):
         an1 = an1 + b1c.value
         an2 = an2 + b2c.value
         tn0 = tn0 + bt0.value
-        dn0 = dn0 + du0.value
+        ln0 = ln0 + lu0.value
         time.sleep(0.1)
 
     sql = "INSERT INTO `adc-snaps` (ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    values = (vn0 / snapshots, vn2 / snapshots, vn1 / snapshots, vol.value, dn0 / snapshots, an1 / snapshots, an2 / snapshots, tn0 / snapshots)
+    values = (vn0 / snapshots, vn2 / snapshots, vn1 / snapshots, vol.value, ln0 / snapshots, an1 / snapshots, an2 / snapshots, tn0 / snapshots)
     mycursor.execute(sql, values)
     mydb.commit()
 
