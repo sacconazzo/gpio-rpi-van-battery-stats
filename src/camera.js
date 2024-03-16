@@ -25,8 +25,8 @@ const shot = async (fileName) => {
 
   const opt = () => {
     if (lux > 0.1) return "";
-    if (lux > 0.02) return "--shutter 5000000";
-    return `--shutter 5000000 --gain ${Math.round(40 - lux * 2 * 1000)}`;
+    if (lux > 0.018) return "--shutter 5000000";
+    return `--shutter 5000000 --gain ${Math.round(36 - lux * 2 * 1000)}`;
   };
 
   execSync(
