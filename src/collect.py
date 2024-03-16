@@ -49,10 +49,12 @@ def gpio(sc, start_time):
     coeffV0 = float(settings.get("COEFF_V0", os.getenv("COEFF_V0"))) # (R1 + R2) / R2
     coeffV1 = float(settings.get("COEFF_V1", os.getenv("COEFF_V1"))) # (R1 + R2) / R2
     coeffV2 = float(settings.get("COEFF_V2", os.getenv("COEFF_V2"))) # (R1 + R2) / R2
-    offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # basically -0.5 + offset adj.
-    offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically -0.5 + offset adj.
-    sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity
-    sensitA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity
+    offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # basically -0.5 + offset adj. at 20°C
+    offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically -0.5 + offset adj. at 20°C
+    sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity at 20°C
+    sensitA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity at 20°C
+    driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # temp. drift per degree ref. to offset
+    driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # temp. drift per degree ref. to offset
 
     interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # from 10 to 60 sec potentiometer source
     snapshots = int(round(interval * 10 * 0.8, 0))
@@ -84,28 +86,7 @@ def gpio(sc, start_time):
     mycursor.execute(sql, values)
     mydb.commit()
 
-    v0 = ((vn0 / snapshots) + offsetV0) * vref * coeffV0
-    if v0 < 0:
-      v0 = 0
-
-    v1 = ((vn1 / snapshots) + offsetV1) * vref * coeffV1
-    if v1 < 0:
-      v1 = 0
-
-    v2 = ((vn2 / snapshots) + offsetV2) * vref * coeffV2
-    if v2 < 0:
-      v2 = 0
-
-    coeffA1 = sensitA1 / offsetA1 * -0.5 ## adj. sensit with offset
-    a1 = ((an1 / snapshots) + offsetA1) * vref * coeffA1
-    if (an1 / snapshots) < 0.05:
-      a1 = 0
-
-    coeffA2 = sensitA2 / offsetA2 * -0.5 ## adj. sensit with offset
-    a2 = ((an2 / snapshots) + offsetA2) * vref * coeffA2
-    if (an2 / snapshots) < 0.05:
-      a2 = 0
-
+    # Temperature
     t0 = tn0 / snapshots
 
     # Voltage Divider
@@ -131,6 +112,34 @@ def gpio(sc, start_time):
 
     # Convert from Kelvin to Celsius
     t0C = t0K - 273.15
+
+    # Voltage
+    v0 = ((vn0 / snapshots) + offsetV0) * vref * coeffV0
+    if v0 < 0:
+      v0 = 0
+
+    v1 = ((vn1 / snapshots) + offsetV1) * vref * coeffV1
+    if v1 < 0:
+      v1 = 0
+
+    v2 = ((vn2 / snapshots) + offsetV2) * vref * coeffV2
+    if v2 < 0:
+      v2 = 0
+
+#   Current
+    offsetA1 = offsetA1 - ((20 - t0C) * driftA1) # temp. drift
+
+    coeffA1 = sensitA1 / offsetA1 * -0.5 # adj. sensit with offset
+    a1 = ((an1 / snapshots) + offsetA1) * vref * coeffA1
+    if (an1 / snapshots) < 0.05:
+      a1 = 0
+
+    offsetA2 = offsetA2 - ((20 - t0C) * driftA2) # temp. drift
+
+    coeffA2 = sensitA2 / offsetA2 * -0.5 # adj. sensit with offset
+    a2 = ((an2 / snapshots) + offsetA2) * vref * coeffA2
+    if (an2 / snapshots) < 0.05:
+      a2 = 0
 
     print("Collected data of " + str(snapshots) + " snapshots")
 
