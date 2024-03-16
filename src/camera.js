@@ -23,15 +23,13 @@ const shot = async (fileName) => {
     LIMIT 1;`
   );
 
-  const opt =
-    lux < 0.1
-      ? lux < 0.024
-        ? "--shutter 5000000 --gain 30"
-        : "--shutter 5000000 --gain 3"
-      : "";
+  const opt = () => {
+    if (lux > 0.1) return "";
+    return `--shutter 5000000 --gain ${Math.round(48 - lux * 2 * 1000)}`;
+  };
 
   execSync(
-    `libcamera-still -o ${fileName} --width 2028 --height 1520 ${opt} --immediate`
+    `libcamera-still -o ${fileName} --width 2028 --height 1520 ${opt()} --immediate`
   );
 };
 
