@@ -51,7 +51,7 @@
 - configure a startup script in your RPI (example in `/etc/rc.local`) adding:
 
 ```
-cd /{your-home}/gpio-rpi-van-battery-stats
+cd /home/pi/gpio-rpi-van-battery-stats
 sleep 30
 sudo yarn collect &
 sudo yarn manager &

@@ -6,7 +6,8 @@
     "db:prepare": "npx knex migrate:latest",
     "collect": "python3 src/collect.py",
     "manager": "node src/manager.js",
-    "refresh": "bash ./refresh.sh"
+    "refresh": "bash ./refresh.sh",
+    "start": "bash ./start.sh"
   },
   "repository": "https://github.com/sacconazzo/gpio.git",
   "author": "sacconazzo <sacconazzo@gmail.com>",
