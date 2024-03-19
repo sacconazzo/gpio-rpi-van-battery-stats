@@ -1,4 +1,5 @@
 // NodeJS SPI Dump for MCP3008 - Created by Mikael Levén
+// Original https://gist.github.com/mikaelleven/c3db08ae7837eb3c8698
 var rpio = require("rpio");
 
 rpio.spiBegin();
@@ -17,14 +18,15 @@ for (var channelHeader = 0; channelHeader <= 7; channelHeader++) {
 setInterval(function () {
   for (var channel = 0; channel <= 7; channel++) {
     // Prepare TX buffer [trigger byte = 0x01] [channel 0 = 0x80 (128)] [placeholder = 0x01]
-    var sendBuffer = new Buffer([0x01, (8 + channel) << 4, 0x01]);
+    var txBuffer = new Buffer([0x01, (8 + channel) << 4, 0x01]);
+    var rxBuffer = new Buffer(txBuffer.byteLength);
 
-    var recieveBuffer = rpio.spiTransfer(sendBuffer, sendBuffer.length); // Send TX buffer and recieve RX buffer
+    rpio.spiTransfer(txBuffer, rxBuffer, txBuffer.length); // Send TX buffer and recieve RX buffer
 
     // Extract value from output buffer. Ignore first byte.
-    var junk = recieveBuffer[0],
-      MSB = recieveBuffer[1],
-      LSB = recieveBuffer[2];
+    var junk = rxBuffer[0],
+      MSB = rxBuffer[1],
+      LSB = rxBuffer[2];
 
     // Ignore first six bits of MSB, bit shift MSB 8 positions and
     // finally combine LSB and MSB to get a full 10 bit value
