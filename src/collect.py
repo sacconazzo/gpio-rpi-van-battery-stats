@@ -46,8 +46,8 @@ def gpio(sc, start_time):
         settings[key] = value
 
     vref = float(settings.get("VREF", os.getenv("VREF"))) # VCC
-    trefL = float(settings.get("TREF_LEFT", os.getenv("TREF_LEFT"))) # temperature ref for current sensor
-    trefR = float(settings.get("TREF_RIGHT", os.getenv("TREF_RIGHT"))) # temperature ref for current sensor
+    trefL = float(settings.get("TREF_LEFT", os.getenv("TREF_LEFT"))) # temperature ref for drift current sensor (see datasheet WCS1700)
+    trefR = float(settings.get("TREF_RIGHT", os.getenv("TREF_RIGHT"))) # temperature ref for drift current sensor (see datasheet WCS1700)
     offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # offset adj.
     offsetV1 = float(settings.get("OFFSET_V1", os.getenv("OFFSET_V1"))) # offset adj.
     offsetV2 = float(settings.get("OFFSET_V2", os.getenv("OFFSET_V2"))) # offset adj.
@@ -58,8 +58,8 @@ def gpio(sc, start_time):
     offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically 0.5 + offset adj. at TREF
     sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity at TREF
     sensitA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity at TREF
-    driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # temp. drift per degree ref. to offset
-    driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # temp. drift per degree ref. to offset
+    driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # temp. drift per degree ref. to offset (valid out of TREF range)
+    driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # temp. drift per degree ref. to offset (valid out of TREF range)
 
     interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # from 10 to 60 sec potentiometer source
     snapshots = int(round(interval * 10 * 0.8, 0))
