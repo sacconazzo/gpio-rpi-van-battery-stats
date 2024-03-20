@@ -46,7 +46,8 @@ def gpio(sc, start_time):
         settings[key] = value
 
     vref = float(settings.get("VREF", os.getenv("VREF"))) # VCC
-    tref = float(settings.get("TREF", os.getenv("TREF"))) # temperature ref for current sensor
+    trefL = float(settings.get("TREF_LEFT", os.getenv("TREF_LEFT"))) # temperature ref for current sensor
+    trefR = float(settings.get("TREF_RIGHT", os.getenv("TREF_RIGHT"))) # temperature ref for current sensor
     offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # offset adj.
     offsetV1 = float(settings.get("OFFSET_V1", os.getenv("OFFSET_V1"))) # offset adj.
     offsetV2 = float(settings.get("OFFSET_V2", os.getenv("OFFSET_V2"))) # offset adj.
@@ -131,9 +132,12 @@ def gpio(sc, start_time):
       v2 = 0
 
     # Current
-    if (t0C < tref):
-      offsetA1 = offsetA1 + ((tref - t0C) * driftA1) # temp. drift
-      offsetA2 = offsetA2 + ((tref - t0C) * driftA2) # temp. drift
+    if (t0C < trefL):
+      offsetA1 = offsetA1 + ((trefL - t0C) * driftA1) # temp. drift
+      offsetA2 = offsetA2 + ((trefL - t0C) * driftA2) # temp. drift
+    if (t0C > trefR):
+      offsetA1 = offsetA1 - ((trefR - t0C) * driftA1) # temp. drift
+      offsetA2 = offsetA2 - ((trefR - t0C) * driftA2) # temp. drift
 
     coeffA1 = sensitA1 / offsetA1 * 0.5 # adj. sensit with offset
     a1 = ((an1 / snapshots) - offsetA1) * vref * coeffA1
