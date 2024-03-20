@@ -22,7 +22,7 @@ bt0 = MCP3008(7)
 adcP = DigitalOutputDevice(27)
 pot0 = PWMLED(14)
 
-adcP.on()
+# adcP.on()
 
 def gpio(sc, start_time):
     pot0.value = 0.1
