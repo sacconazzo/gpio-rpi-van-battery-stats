@@ -1,4 +1,4 @@
-from gpiozero import MCP3008, PWMLED
+from gpiozero import MCP3008, DigitalOutputDevice, PWMLED
 from dotenv import load_dotenv
 import os
 
@@ -19,7 +19,10 @@ b1c = MCP3008(5)
 b2c = MCP3008(6)
 bt0 = MCP3008(7)
 
+adcP = DigitalOutputDevice(27)
 pot0 = PWMLED(14)
+
+adcP.on()
 
 def gpio(sc, start_time):
     pot0.value = 0.1
