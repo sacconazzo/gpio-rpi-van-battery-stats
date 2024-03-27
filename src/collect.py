@@ -57,8 +57,8 @@ def gpio(sc, start_time):
     offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically 0.5 + offset adj. at TREF
     sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity at TREF
     sensitA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity at TREF
-    driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # temp. drift per degree ref. to offset (valid out of TREF range)
-    driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # temp. drift per degree ref. to offset (valid out of TREF range)
+    driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # drift temp. -> quadratic coef per °C ( offset + (tref - temp.) * coef)^2)
+    driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # drift temp. -> quadratic coef per °C ( offset + (tref - temp.) * coef)^2)
 
     interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # from 10 to 60 sec potentiometer source
     snapshots = int(round(interval * 10 * 0.8, 0))
