@@ -47,8 +47,7 @@ def gpio(sc, start_time):
 
     interval = int(settings.get("INTERVAL", os.getenv("INTERVAL"))) # interval time btw 
     vref = float(settings.get("VREF", os.getenv("VREF"))) # VCC
-    trefL = float(settings.get("TREF_LEFT", os.getenv("TREF_LEFT"))) # temperature ref for drift current sensor (see datasheet WCS1700)
-    trefR = float(settings.get("TREF_RIGHT", os.getenv("TREF_RIGHT"))) # temperature ref for drift current sensor (see datasheet WCS1700)
+    tref = float(settings.get("TREF", os.getenv("TREF"))) # temperature ref for drift current sensor (see datasheet WCS1700)
     offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # offset adj.
     offsetV1 = float(settings.get("OFFSET_V1", os.getenv("OFFSET_V1"))) # offset adj.
     offsetV2 = float(settings.get("OFFSET_V2", os.getenv("OFFSET_V2"))) # offset adj.
@@ -59,8 +58,8 @@ def gpio(sc, start_time):
     offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically 0.5 + offset adj. at TREF
     sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity at TREF
     sensitA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity at TREF
-    driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # temp. drift per degree ref. to offset (valid out of TREF range)
-    driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # temp. drift per degree ref. to offset (valid out of TREF range)
+    driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # drift temp. -> quadratic coef per °C ( offset + (tref - temp.) * coef)^2)
+    driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # drift temp. -> quadratic coef per °C ( offset + (tref - temp.) * coef)^2)
 
     # interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # from 10 to 60 sec potentiometer source
     snapshots = int(round(interval * 10 * 0.8, 0))
@@ -133,12 +132,8 @@ def gpio(sc, start_time):
       v2 = 0
 
     # Current
-    if (t0C < trefL):
-      offsetA1 = offsetA1 + ((trefL - t0C) * driftA1) # temp. drift
-      offsetA2 = offsetA2 + ((trefL - t0C) * driftA2) # temp. drift
-    if (t0C > trefR):
-      offsetA1 = offsetA1 - ((trefR - t0C) * driftA1) # temp. drift
-      offsetA2 = offsetA2 - ((trefR - t0C) * driftA2) # temp. drift
+    offsetA1 = offsetA1 + math.pow((tref - t0C) * driftA1, 2) # temp. drift 
+    offsetA2 = offsetA2 + math.pow((tref - t0C) * driftA2, 2) # temp. drift
 
     coeffA1 = sensitA1 / offsetA1 * 0.5 # adj. sensit with offset
     a1 = ((an1 / snapshots) - offsetA1) * vref * coeffA1
