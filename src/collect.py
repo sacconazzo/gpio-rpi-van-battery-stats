@@ -45,6 +45,7 @@ def gpio(sc, start_time):
         value = row[1] 
         settings[key] = value
 
+    interval = int(settings.get("INTERVAL", os.getenv("INTERVAL"))) # interval time btw 
     vref = float(settings.get("VREF", os.getenv("VREF"))) # VCC
     tref = float(settings.get("TREF", os.getenv("TREF"))) # temperature ref for drift current sensor (see datasheet WCS1700)
     offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # offset adj.
@@ -60,7 +61,7 @@ def gpio(sc, start_time):
     driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # drift temp. -> quadratic coef per °C ( offset + (tref - temp.) * coef)^2)
     driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # drift temp. -> quadratic coef per °C ( offset + (tref - temp.) * coef)^2)
 
-    interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # from 10 to 60 sec potentiometer source
+    # interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # from 10 to 60 sec potentiometer source
     snapshots = int(round(interval * 10 * 0.8, 0))
 
     print("Start reading sensors at " + str(start_time) + "... (next in " + str(interval) + " seconds)")
