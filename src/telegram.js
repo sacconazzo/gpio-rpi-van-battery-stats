@@ -41,7 +41,9 @@ bot.use(isAuthorized);
 
 bot.command("billy", async (ctx) => {
   try {
-    const source = await campera.picture();
+    const shutter = ctx.message.text.split(" ")[1];
+
+    const source = await campera.picture({ shutter });
 
     await ctx.replyWithPhoto({ source });
     await campera.delete(source);
