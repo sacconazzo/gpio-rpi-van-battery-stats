@@ -111,7 +111,7 @@ def gpio(sc, start_time):
     # Rt = 10000  # Used for Testing. Setting Rt=10k should give TempC=25
     
     # Steinhart - Hart Equation
-    if t0 > 0 or t0 < 1:
+    if t0 > 0.01 or t0 < 1:
       t0K = 1 / (A + (B * math.log(Rt)) + C * math.pow(math.log(Rt), 3))
     else:
       t0K = 273.15
