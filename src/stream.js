@@ -13,10 +13,10 @@ const camera = new RaspiCam({
 
 // Avvia il server HTTP
 const server = http.createServer((req, res) => {
-  fs.readFile(__dirname + '/index.html', (err, data) => {
+  fs.readFile(__dirname + '/stream.html', (err, data) => {
     if (err) {
       res.writeHead(500);
-      return res.end('Error loading index.html');
+      return res.end('Error loading stream.html');
     }
     res.writeHead(200);
     res.end(data);

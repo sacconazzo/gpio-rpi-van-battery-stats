@@ -7,9 +7,17 @@
 </head>
 <body>
   <img id="video" src="#" alt="Video Stream">
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
+<script type="module">
+    import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
+
+    // Specifica l'URL del server Socket.IO
+    const socket = io('http://localhost:3000');
+
+    // Evento per gestire la connessione
+    socket.on('connect', () => {
+        console.log('Connessione stabilita con successo!');
+    });
+
     const video = document.getElementById('video');
     socket.on('image', (data) => {
       video.src = 'data:image/jpeg;base64,' + btoa(new Uint8Array(data).reduce((data, byte) => data + String.fromCharCode(byte), ''));
