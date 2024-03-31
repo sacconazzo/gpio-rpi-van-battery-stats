@@ -8,6 +8,7 @@
     "manager": "node src/manager.js",
     "refresh": "bash ./refresh.sh",
     "test:adc": "sudo node tests/adc.js",
+    "test:stream": "serve test/stream.js -p 8080",
     "start": "bash ./start.sh"
   },
   "repository": "https://github.com/sacconazzo/gpio.git",
@@ -24,5 +25,8 @@
     "socket.io": "^4.7.5",
     "telegraf": "^4.16.3",
     "winston": "^3.12.0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
   }
 }

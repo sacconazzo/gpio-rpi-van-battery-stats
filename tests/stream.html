@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Stream</title>
+</head>
+<body>
+  <img id="video" src="#" alt="Video Stream">
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const video = document.getElementById('video');
+    socket.on('image', (data) => {
+      video.src = 'data:image/jpeg;base64,' + btoa(new Uint8Array(data).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+    });
+  </script>
+</body>
+</html>
