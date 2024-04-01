@@ -7,11 +7,9 @@
 </head>
 <body>
   <img id="video" src="#" alt="Video Stream">
-<script type="module">
-    import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
-
-    // Specifica l'URL del server Socket.IO
-    const socket = io('http://localhost:3000');
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<script>
+    const socket = io.connect('ws://localhost:3000');
 
     // Evento per gestire la connessione
     socket.on('connect', () => {
