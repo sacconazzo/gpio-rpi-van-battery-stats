@@ -30,13 +30,13 @@ io.on("connection", async (socket) => {
 });
 
 setInterval(async () => {
-  const source = await campera.picture({ shutter: 12 });
+  const source = await campera.picture();
   const data = await fsp.readFile(source, "base64");
 
   await io.emit("image", data); // Invia l'immagine al client
 
   await campera.delete(source);
-}, 1000);
+}, 5000);
 
 // Ascolta sulla porta 3000
 server.listen(3000, () => {
