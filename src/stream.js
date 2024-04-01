@@ -1,14 +1,7 @@
 const http = require("http");
 const fs = require("fs");
-const RaspiCam = require("raspicam");
-
-// Configura la fotocamera
-const camera = new RaspiCam({
-  mode: "photo", // Imposta la modalità su 'photo' per catturare immagini
-  output: "latest.jpg", // Nome del file di output
-  encoding: "jpg", // Formato di encoding dell'immagine
-  timeout: 0, // Nessun timeout, continua a scattare foto
-});
+const fsp = require("fs/promises");
+const campera = require("./camera");
 
 // Avvia il server HTTP
 const server = http.createServer((req, res) => {
@@ -30,23 +23,20 @@ const io = require("socket.io")(server, {
 });
 
 // Avvia il server di streaming
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log("Client connected");
-  camera.start(); // Avvia la cattura delle immagini
-  camera.on("read", (err, timestamp, filename) => {
-    if (err) {
-      console.log(err);
-    } else {
-      fs.readFile(filename, (err, data) => {
-        if (err) {
-          console.log(err);
-        } else {
-          socket.emit("image", data); // Invia l'immagine al client
-        }
-      });
-    }
-  });
+
+  // await socket.emit("image", data); // Invia l'immagine al client
 });
+
+setInterval(async () => {
+  const source = await campera.picture({ shutter: 12 });
+  const data = await fsp.readFile(source, "base64");
+
+  await io.emit("image", data); // Invia l'immagine al client
+
+  await campera.delete(source);
+}, 1000);
 
 // Ascolta sulla porta 3000
 server.listen(3000, () => {
