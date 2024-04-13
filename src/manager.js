@@ -94,8 +94,8 @@ const share = async () => {
       WHERE\
         timestamp> (NOW() - INTERVAL ${process.env.REALTIME_MINUTES} MINUTE)\
       ORDER BY\
-        id ASC\
-      LIMIT 500;`
+        id ASC;`
+      // LIMIT 500;
     );
 
     const data = {
