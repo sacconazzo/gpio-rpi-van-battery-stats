@@ -6,7 +6,7 @@ import sched
 import time
 import math
 import mysql.connector
-import logging
+# import logging
 
 load_dotenv()
 
