@@ -145,6 +145,9 @@ def gpio(sc, start_time):
     if (an2 / snapshots) < 0.05:
       a2 = 0
 
+    print("A1 offset: " + str(coeffA1) + ", sensitivity: " + str(offsetA1))
+    print("A2 offset: " + str(coeffA2) + ", sensitivity: " + str(offsetA2))
+
     print("Collected data of " + str(snapshots) + " snapshots")
 
     sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff, temperature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
