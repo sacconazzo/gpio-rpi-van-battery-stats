@@ -48,9 +48,6 @@ def gpio(sc, start_time):
     interval = int(settings.get("INTERVAL", os.getenv("INTERVAL"))) # interval time btw 
     vref = float(settings.get("VREF", os.getenv("VREF"))) # VCC
     tref = float(settings.get("TREF", os.getenv("TREF"))) # temperature ref for drift current sensor (see datasheet WCS1700)
-    offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # offset adj.
-    offsetV1 = float(settings.get("OFFSET_V1", os.getenv("OFFSET_V1"))) # offset adj.
-    offsetV2 = float(settings.get("OFFSET_V2", os.getenv("OFFSET_V2"))) # offset adj.
     coeffV0 = float(settings.get("COEFF_V0", os.getenv("COEFF_V0"))) # (R1 + R2) / R2
     coeffV1 = float(settings.get("COEFF_V1", os.getenv("COEFF_V1"))) # (R1 + R2) / R2
     coeffV2 = float(settings.get("COEFF_V2", os.getenv("COEFF_V2"))) # (R1 + R2) / R2
@@ -119,15 +116,15 @@ def gpio(sc, start_time):
     t0C = t0K - 273.15
 
     # Voltage
-    v0 = ((vn0 / snapshots) + offsetV0) * vref * coeffV0
+    v0 = (vn0 / snapshots) * vref * coeffV0
     if v0 < 0:
       v0 = 0
 
-    v1 = ((vn1 / snapshots) + offsetV1) * vref * coeffV1
+    v1 = (vn1 / snapshots) * vref * coeffV1
     if v1 < 0:
       v1 = 0
 
-    v2 = ((vn2 / snapshots) + offsetV2) * vref * coeffV2
+    v2 = (vn2 / snapshots) * vref * coeffV2
     if v2 < 0:
       v2 = 0
 
