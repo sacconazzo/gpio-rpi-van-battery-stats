@@ -55,3 +55,19 @@ WHERE
 	date(timestamp)> (NOW() - INTERVAL 7 DAY)
 GROUP BY
 	data;
+
+SELECT
+	x.`timestamp`,
+	b1_voltage,
+	b2_voltage,
+	b1_current,
+	ch5,
+	b2_current,
+	ch6,
+	temperature
+FROM
+	`pi-gpio`.`battery-snaps` x
+JOIN `pi-gpio`.`adc-snaps` a ON
+	x.`timestamp` = a.`timestamp`
+ORDER BY
+	x.id DESC
