@@ -47,10 +47,11 @@ def gpio(sc, start_time):
 
     interval = int(settings.get("INTERVAL", os.getenv("INTERVAL"))) # interval time btw 
     vref = float(settings.get("VREF", os.getenv("VREF"))) # VCC
-    tref = float(settings.get("TREF", os.getenv("TREF"))) # temperature ref for drift current sensor (see datasheet WCS1700)
     coeffV0 = float(settings.get("COEFF_V0", os.getenv("COEFF_V0"))) # (R1 + R2) / R2
     coeffV1 = float(settings.get("COEFF_V1", os.getenv("COEFF_V1"))) # (R1 + R2) / R2
     coeffV2 = float(settings.get("COEFF_V2", os.getenv("COEFF_V2"))) # (R1 + R2) / R2
+    trefA1 = float(settings.get("TREF_A1", os.getenv("TREF_A1"))) # temperature ref for drift current sensor (see datasheet WCS1700)
+    trefA2 = float(settings.get("TREF_A2", os.getenv("TREF_A2"))) # temperature ref for drift current sensor (see datasheet WCS1700)
     offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # basically 0.5 + offset adj. at TREF
     offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically 0.5 + offset adj. at TREF
     sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity at TREF
@@ -131,8 +132,8 @@ def gpio(sc, start_time):
     # Current
     # offsetA1 = offsetA1 + math.pow((tref - t0C) * driftA1, 2) # temp. drift exp.
     # offsetA2 = offsetA2 + math.pow((tref - t0C) * driftA2, 2) # temp. drift exp.
-    offsetA1 = offsetA1 + (tref - t0C) * driftA1 # temp. drift linear
-    offsetA2 = offsetA2 + (tref - t0C) * driftA2 # temp. drift linear
+    offsetA1 = offsetA1 + (trefA1 - t0C) * driftA1 # temp. drift linear
+    offsetA2 = offsetA2 + (trefA2 - t0C) * driftA2 # temp. drift linear
 
     coeffA1 = sensitA1 / offsetA1 * 0.5 # adj. sensit with offset
     a1 = ((an1 / snapshots) - offsetA1) * vref * coeffA1
