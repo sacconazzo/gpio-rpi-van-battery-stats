@@ -71,3 +71,5 @@ JOIN `pi-gpio`.`adc-snaps` a ON
 	x.`timestamp` = a.`timestamp`
 ORDER BY
 	x.id DESC
+LIMIT
+	100;
