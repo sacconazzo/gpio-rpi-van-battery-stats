@@ -56,20 +56,20 @@ WHERE
 GROUP BY
 	data;
 
-SELECT
-	x.`timestamp`,
-	b1_voltage,
-	b2_voltage,
-	b1_current,
-	ch5,
-	b2_current,
-	ch6,
-	temperature
-FROM
-	`pi-gpio`.`battery-snaps` x
-JOIN `pi-gpio`.`adc-snaps` a ON
-	x.`timestamp` = a.`timestamp`
-ORDER BY
-	x.id DESC
-LIMIT
-	100;
+-- for recalibrate
+select
+	truncate(avg(a.ch5), 4) as OFFSET_A1,
+	truncate(avg(a.ch6), 4) as OFFSET_A2,
+	avg(b.b1_current),
+	avg(b.b2_current),
+	round(avg(b.temperature), 2) as TEMPERATURE
+from
+	`pi-gpio`.`battery-snaps` b
+join `pi-gpio`.`adc-snaps` a on
+	a.`timestamp` = b.`timestamp`
+where
+	b1_current < 1
+	and b1_current > -1
+order by
+	a.`timestamp` DESC
+limit 100

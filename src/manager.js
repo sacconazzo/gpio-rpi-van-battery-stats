@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const axios = require("axios");
 const winston = require("winston");
+const cron = require("node-cron");
 const Gpio = require("pigpio").Gpio;
 const { exec, execSync } = require("child_process");
 const db = require("./db");
@@ -165,6 +166,43 @@ if (process.env.ENABLE_BUTTONS === "true") {
   };
   setInterval(clearLedButtons, 100);
 }
+
+// CRON - RICALIBRATE SENSOR
+const recalibrateCurrentSensor = async () => {
+  const [settings] = await db.raw(
+    `select\
+    truncate(avg(a.ch5), 4) as OFFSET_A1,\
+    truncate(avg(a.ch6), 4) as OFFSET_A2,\
+    avg(b.b1_current),\
+    avg(b.b2_current),\
+    round(avg(b.temperature), 2) as TEMPERATURE\
+    from\
+      battery-snaps b\
+    join adc-snaps a on\
+      a.timestamp = b.timestamp\
+    where\
+      b1_current < 1\
+      and b1_current > -1\
+    order by\
+      a.timestamp DESC\
+    limit 100;`
+  );
+
+  await db("settings")
+    .update({ value: String(settings.OFFSET_A1) })
+    .where({ key: "OFFSET_A1" });
+  await db("settings")
+    .update({ value: String(settings.OFFSET_A2) })
+    .where({ key: "OFFSET_A2" });
+  await db("settings")
+    .update({ value: String(settings.TEMPERATURE) })
+    .where({ key: "TREF_A1" });
+  await db("settings")
+    .update({ value: String(settings.TEMPERATURE) })
+    .where({ key: "TREF_A2" });
+};
+
+cron.schedule("0 5 * * *", recalibrateCurrentSensor);
 
 // LOGGER
 const logger = winston.createLogger({
