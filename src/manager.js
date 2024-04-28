@@ -169,16 +169,14 @@ if (process.env.ENABLE_BUTTONS === "true") {
 
 // CRON - RICALIBRATE SENSOR
 const recalibrateCurrentSensor = async () => {
-  const [settings] = await db.raw(
+  const [[settings]] = await db.raw(
     `select\
     truncate(avg(a.ch5), 4) as OFFSET_A1,\
     truncate(avg(a.ch6), 4) as OFFSET_A2,\
-    avg(b.b1_current),\
-    avg(b.b2_current),\
     round(avg(b.temperature), 2) as TEMPERATURE\
     from\
-      battery-snaps b\
-    join adc-snaps a on\
+      \`battery-snaps\` b\
+    join \`adc-snaps\` a on\
       a.timestamp = b.timestamp\
     where\
       b1_current < 1\
