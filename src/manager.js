@@ -194,10 +194,10 @@ const recalibrateCurrentSensor = async () => {
     .where({ key: "OFFSET_A2" });
   await db("settings")
     .update({ value: String(settings.TEMPERATURE) })
-    .where({ key: "TREF_A1" });
+    .where({ key: "TREF_A1", notes: new Date().toISOString() });
   await db("settings")
     .update({ value: String(settings.TEMPERATURE) })
-    .where({ key: "TREF_A2" });
+    .where({ key: "TREF_A2", notes: new Date().toISOString() });
 };
 
 cron.schedule("0 5 * * *", recalibrateCurrentSensor);
