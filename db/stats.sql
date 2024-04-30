@@ -70,6 +70,6 @@ join `pi-gpio`.`adc-snaps` a on
 where
 	b1_current < 1
 	and b1_current > -1
+	and a.timestamp > CURDATE() - INTERVAL 1 HOUR
 order by
 	a.`timestamp` DESC
-limit 10
