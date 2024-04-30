@@ -195,6 +195,7 @@ const recalibrateCurrentSensor = async () => {
       snaps > 10;`
   );
 
+  console.log(`Current sensor recalibrate: ${JSON.stringify(settings)}`);
   if (!settings) return;
 
   await db("settings")
