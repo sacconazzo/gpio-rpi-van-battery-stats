@@ -78,5 +78,7 @@ where
 	and temperature > 1
 group by
 	`timegroup`
+HAVING 
+	snaps > 50
 order by
 	`timegroup` DESC
