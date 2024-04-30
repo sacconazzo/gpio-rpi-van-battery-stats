@@ -115,7 +115,9 @@ const share = async () => {
 
     pulseConnection.servoWrite(pulseWidth);
 
-    telegram.start();
+    telegram.start({
+      onCalibrateRequest: recalibrateCurrentSensor,
+    });
   } catch (e) {
     console.log(e.message);
     pulseConnection.digitalWrite(0);

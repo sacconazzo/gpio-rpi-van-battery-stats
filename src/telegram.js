@@ -11,6 +11,8 @@ const bot = new Telegraf(token);
 
 let isStarted = false;
 
+const events = {};
+
 // Start command
 bot.start(async (ctx) => {
   try {
@@ -38,6 +40,16 @@ const isAuthorized = async (ctx, next) => {
 };
 
 bot.use(isAuthorized);
+
+bot.command("calibrate_a", async (ctx) => {
+  try {
+    if (events.onCalibrateRequest) await events.onCalibrateRequest();
+
+    console.log("Current sensor recalibrate");
+  } catch (e) {
+    console.error(e);
+  }
+});
 
 bot.command("billy", async (ctx) => {
   try {
@@ -114,7 +126,9 @@ bot.command("poweroff", async (ctx) => {
 });
 
 module.exports = {
-  start: () => {
+  start: (setup) => {
+    events.onCalibrateRequest = setup.onCalibrateRequest;
+
     if (!isStarted) bot.launch();
     isStarted = true;
   },
