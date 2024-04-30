@@ -184,7 +184,7 @@ const recalibrateCurrentSensor = async () => {
       and b1_current > -1\
     order by\
       a.timestamp DESC\
-    limit 100;`
+    limit 10;`
   );
 
   await db("settings")
