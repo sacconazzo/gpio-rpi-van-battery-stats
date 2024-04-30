@@ -58,11 +58,12 @@ GROUP BY
 
 -- for recalibrate
 select
-	truncate(avg(a.ch5), 4) as OFFSET_A1,
-	truncate(avg(a.ch6), 4) as OFFSET_A2,
-	avg(b.b1_current),
-	avg(b.b2_current),
-	round(avg(b.temperature), 2) as TEMPERATURE
+	b.timestamp,
+	truncate((a.ch5), 4) as OFFSET_A1,
+	truncate((a.ch6), 4) as OFFSET_A2,
+	(b.b1_current) as A1,
+	(b.b2_current) as A2,
+	round((b.temperature), 2) as TEMPERATURE
 from
 	`pi-gpio`.`battery-snaps` b
 join `pi-gpio`.`adc-snaps` a on
@@ -70,6 +71,8 @@ join `pi-gpio`.`adc-snaps` a on
 where
 	b1_current < 1
 	and b1_current > -1
-	and a.timestamp > CURDATE() - INTERVAL 1 HOUR
+	and b2_current < 1
+	and b2_current > -1
+	and a.timestamp > (NOW() - INTERVAL 1 HOUR)
 order by
 	a.`timestamp` DESC

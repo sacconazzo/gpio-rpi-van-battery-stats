@@ -186,7 +186,9 @@ const recalibrateCurrentSensor = async () => {
     where\
       b1_current < 1\
       and b1_current > -1\
-      and a.timestamp > CURDATE() - INTERVAL 1 HOUR;`
+      and b2_current < 1\
+      and b2_current > -1\
+      and a.timestamp > (NOW() - INTERVAL 1 HOUR);`
   );
 
   console.log(settings);
