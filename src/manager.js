@@ -176,6 +176,8 @@ const recalibrateCurrentSensor = async () => {
     `select\
     truncate(avg(a.ch5), 4) as OFFSET_A1,\
     truncate(avg(a.ch6), 4) as OFFSET_A2,\
+    avg(b.b1_current) as A1,\
+    avg(b.b2_current) as A2,\
     round(avg(b.temperature), 2) as TEMPERATURE\
     from\
       \`battery-snaps\` b\
@@ -187,6 +189,8 @@ const recalibrateCurrentSensor = async () => {
       and a.timestamp > CURDATE() - INTERVAL 1 HOUR;`
   );
 
+  console.log(settings);
+
   await db("settings")
     .update({ value: String(settings.OFFSET_A1) })
     .where({ key: "OFFSET_A1" });
@@ -194,11 +198,17 @@ const recalibrateCurrentSensor = async () => {
     .update({ value: String(settings.OFFSET_A2) })
     .where({ key: "OFFSET_A2" });
   await db("settings")
-    .update({ value: String(settings.TEMPERATURE) })
+    .update({
+      value: String(settings.TEMPERATURE),
+      notes: new Date().toISOString(),
+    })
     .where({ key: "TREF_A1", notes: new Date().toISOString() });
   await db("settings")
-    .update({ value: String(settings.TEMPERATURE) })
-    .where({ key: "TREF_A2", notes: new Date().toISOString() });
+    .update({
+      value: String(settings.TEMPERATURE),
+      notes: new Date().toISOString(),
+    })
+    .where({ key: "TREF_A2" });
 };
 
 cron.schedule(recalibrateInterval, recalibrateCurrentSensor);

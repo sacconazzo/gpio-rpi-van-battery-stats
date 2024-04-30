@@ -43,7 +43,9 @@ bot.use(isAuthorized);
 
 bot.command("calibrate_a", async (ctx) => {
   try {
-    if (events.onCalibrateRequest) await events.onCalibrateRequest();
+    await events.onCalibrateRequest();
+
+    await ctx.reply("Current sensor recalibrate");
 
     console.log("Current sensor recalibrate");
   } catch (e) {
