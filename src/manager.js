@@ -9,6 +9,7 @@ const db = require("./db");
 const telegram = require("./telegram");
 
 const apiToken = process.env.API_TOKEN;
+const recalibrateInterval = process.env.RECALIBRATE_INTERVAL || "0 5 * * *";
 
 // Imposta il numero del pin GPIO che desideri utilizzare
 const pinShare = 18;
@@ -200,7 +201,7 @@ const recalibrateCurrentSensor = async () => {
     .where({ key: "TREF_A2", notes: new Date().toISOString() });
 };
 
-cron.schedule("0 5 * * *", recalibrateCurrentSensor);
+cron.schedule(recalibrateInterval, recalibrateCurrentSensor);
 
 // LOGGER
 const logger = winston.createLogger({
