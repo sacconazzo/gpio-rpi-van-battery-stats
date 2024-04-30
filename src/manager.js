@@ -209,6 +209,8 @@ const recalibrateCurrentSensor = async () => {
       notes: new Date().toISOString(),
     })
     .where({ key: "TREF_A2" });
+
+  return settings;
 };
 
 cron.schedule(recalibrateInterval, recalibrateCurrentSensor);
