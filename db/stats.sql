@@ -70,11 +70,11 @@ from
 join `pi-gpio`.`adc-snaps` a on
 	a.`timestamp` = b.`timestamp`
 where
-	b1_current < 0.5
-	and b1_current > -0.5
-	and b2_current < 0.5
-	and b2_current > -0.5
-	and a.timestamp > (NOW() - INTERVAL 7 DAY)
+	b1_current < 0.3
+	and b1_current > -0.3
+	and b2_current < 0.3
+	and b2_current > -0.3
+	-- and a.timestamp > (NOW() - INTERVAL 40 DAY)
 	and temperature > 1
 group by
 	`timegroup`
