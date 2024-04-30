@@ -202,7 +202,7 @@ const recalibrateCurrentSensor = async () => {
       value: String(settings.TEMPERATURE),
       notes: new Date().toISOString(),
     })
-    .where({ key: "TREF_A1", notes: new Date().toISOString() });
+    .where({ key: "TREF_A1" });
   await db("settings")
     .update({
       value: String(settings.TEMPERATURE),
