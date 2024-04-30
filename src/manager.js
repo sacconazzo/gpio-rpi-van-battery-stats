@@ -9,7 +9,9 @@ const db = require("./db");
 const telegram = require("./telegram");
 
 const apiToken = process.env.API_TOKEN;
-const recalibrateInterval = process.env.RECALIBRATE_INTERVAL || "0 5 * * *";
+
+const shareInterval = process.env.SHARE_INTERVAL || "* * * * *";
+const recalibrateInterval = process.env.RECALIBRATE_INTERVAL || "0 * * * *";
 
 // Imposta il numero del pin GPIO che desideri utilizzare
 const pinShare = 18;
@@ -125,8 +127,7 @@ const share = async () => {
   pwmShare.hardwarePwmWrite(frequency, 0);
 };
 
-setInterval(share, Number(process.env.SHARE_INTERVAL) * 1000);
-
+cron.schedule(shareInterval, share);
 share();
 
 // BUTTONS
@@ -185,10 +186,10 @@ const recalibrateCurrentSensor = async () => {
     join \`adc-snaps\` a on\
       a.timestamp = b.timestamp\
     where\
-      b1_current < 0.5\
-      and b1_current > -0.5\
-      and b2_current < 0.5\
-      and b2_current > -0.5\
+      b1_current < 0.3\
+      and b1_current > -0.3\
+      and b2_current < 0.3\
+      and b2_current > -0.3\
       and a.timestamp > (NOW() - INTERVAL 1 HOUR)
     HAVING 
       snaps > 10;`
