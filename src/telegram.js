@@ -45,7 +45,11 @@ bot.command("calibrate_a", async (ctx) => {
   try {
     const setup = await events.onCalibrateRequest();
 
-    await ctx.reply(`Current sensor recalibrate: ${JSON.stringify(setup)}`);
+    await ctx.reply(
+      `Current sensor recalibrate:\n${
+        setup ? JSON.stringify(setup) : "not enough data"
+      }`
+    );
   } catch (e) {
     console.error(e);
   }
