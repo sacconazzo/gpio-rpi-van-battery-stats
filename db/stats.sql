@@ -58,7 +58,7 @@ GROUP BY
 
 -- for recalibrate
 select
-	DATE_FORMAT(CONVERT_TZ( a.`timestamp`, 'UTC', 'Europe/Rome'), '%Y-%m-%d %H:00:00') AS `timegroup`,
+	DATE_FORMAT(CONVERT_TZ( a.`timestamp`, 'UTC', 'Europe/Rome'), '%Y-%m-%d h%H') AS `timegroup`,
 	count(*) as snaps, 
 	truncate(avg(a.ch5), 4) as OFFSET_A1,
 	truncate(avg(a.ch6), 4) as OFFSET_A2,
@@ -70,15 +70,15 @@ from
 join `pi-gpio`.`adc-snaps` a on
 	a.`timestamp` = b.`timestamp`
 where
-	b1_current < 0.3
-	and b1_current > -0.3
-	and b2_current < 0.3
-	and b2_current > -0.3
+	b1_current < 0.5
+	and b1_current > -0.5
+	and b2_current < 0.5
+	and b2_current > -0.5
 	-- and a.timestamp > (NOW() - INTERVAL 40 DAY)
 	and temperature > 1
 group by
 	`timegroup`
 HAVING 
-	snaps > 50
+	snaps > 20
 order by
 	`timegroup` DESC
