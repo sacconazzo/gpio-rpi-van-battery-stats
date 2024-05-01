@@ -172,7 +172,7 @@ if (process.env.ENABLE_BUTTONS === "true") {
 }
 
 // CRON - RICALIBRATE SENSOR
-const recalibrateCurrentSensor = async () => {
+const recalibrateCurrentSensor = async ({ force = false }) => {
   const [[settings]] = await db.raw(
     `select\
     count(*) as snaps,
@@ -186,13 +186,17 @@ const recalibrateCurrentSensor = async () => {
     join \`adc-snaps\` a on\
       a.timestamp = b.timestamp\
     where\
-      b1_current < 0.3\
-      and b1_current > -0.3\
-      and b2_current < 0.3\
-      and b2_current > -0.3\
-      and a.timestamp > (NOW() - INTERVAL 1 HOUR)
-    HAVING 
-      snaps > 10;`
+      a.timestamp > (NOW() - INTERVAL ${force ? "3 MINUTE" : "1 HOUR"})\
+      ${
+        force
+          ? ";"
+          : "and b1_current < 0.3\
+             and b1_current > -0.3\
+             and b2_current < 0.3\
+             and b2_current > -0.3\
+             HAVING\
+             snaps > 10;"
+      }`
   );
 
   console.log(`Current sensor recalibrate: ${JSON.stringify(settings)}`);
