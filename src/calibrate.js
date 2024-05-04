@@ -19,7 +19,7 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
     const spreadA1 = spread.A1_MAX - spread.A1_MIN;
     const spreadA2 = spread.A2_MAX - spread.A2_MIN;
 
-    if (spreadA1 > 0.5 || spreadA2 > 0.5) {
+    if (spreadA1 > 0.4 || spreadA2 > 0.4) {
       console.log(
         `Current sensor recalibrate: not stabile (${spreadA1},${spreadA2}), tentative ${tentative}`
       );
