@@ -1,6 +1,6 @@
 const db = require("./db");
 
-const calibrate = async ({ force = true, tentative = 1 }) => {
+const calibrate = async ({ force = true, tentative = 1 } = {}) => {
   if (force) {
     const [[spread]] = await db.raw(
       `select\
