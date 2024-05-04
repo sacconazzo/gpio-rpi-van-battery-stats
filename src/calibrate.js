@@ -13,7 +13,7 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
         join \`adc-snaps\` a on\
           a.timestamp = b.timestamp\
         where\
-          a.timestamp > (NOW() - INTERVAL 10 MINUTE);`
+          a.timestamp > (NOW() - INTERVAL 15 MINUTE);`
     );
 
     const spreadA1 = spread.A1_MAX - spread.A1_MIN;
@@ -25,7 +25,7 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
       );
       await new Promise((r) => setTimeout(() => r(), 60000)); // wait 1 min
       return calibrate({
-        force: force && tentative <= 20,
+        force: force && tentative <= 24,
         tentative: tentative + 1,
       });
     }
