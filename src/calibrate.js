@@ -81,6 +81,8 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
     temperature: settings.TEMPERATURE,
     a1: settings.OFFSET_A1,
     a2: settings.OFFSET_A2,
+    shift_a1: settings.A1,
+    shift_a2: settings.A2,
   });
 
   return settings;
