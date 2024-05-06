@@ -69,15 +69,19 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
   await db("settings")
     .update({
       value: String(settings.TEMPERATURE),
-      notes: new Date().toISOString(),
     })
     .where({ key: "TREF_A1" });
   await db("settings")
     .update({
       value: String(settings.TEMPERATURE),
-      notes: new Date().toISOString(),
     })
     .where({ key: "TREF_A2" });
+
+  await db("calibrate-snaps").insert({
+    temperature: settings.TEMPERATURE,
+    a1: settings.OFFSET_A1,
+    a2: settings.OFFSET_A2,
+  });
 
   return settings;
 };
