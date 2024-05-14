@@ -19,7 +19,7 @@ b1c = MCP3008(5)
 b2c = MCP3008(6)
 bt0 = MCP3008(7)
 
-adcP = DigitalOutputDevice(27)
+# adcP = DigitalOutputDevice(27)
 pot0 = PWMLED(14)
 
 # adcP.on()
