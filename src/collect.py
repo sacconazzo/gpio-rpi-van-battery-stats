@@ -150,11 +150,11 @@ def gpio(sc, start_time):
 
     print("Collected data of " + str(snapshots) + " snapshots")
 
-    if (v0 > 1 and v1 > 1 and v2 > 1): # check battery connected and sensor errors
-      sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff, temperature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-      values = (v0, v1, v2, a1, a2, interval / 60 / 60, t0C)
-      mycursor.execute(sql, values)
-      mydb.commit()
+    # if (v0 > 1 and v1 > 1 and v2 > 1): # check battery connected and sensor errors
+    sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff, temperature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    values = (v0, v1, v2, a1, a2, interval / 60 / 60, t0C)
+    mycursor.execute(sql, values)
+    mydb.commit()
 
     mycursor.close()
     mydb.close()
