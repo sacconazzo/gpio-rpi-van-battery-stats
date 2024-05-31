@@ -58,34 +58,35 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
   );
 
   console.log(`Current sensor recalibrate: ${JSON.stringify(settings)}`);
-  if (!settings) return;
 
-  await db("settings")
-    .update({ value: String(settings.OFFSET_A1) })
-    .where({ key: "OFFSET_A1" });
-  await db("settings")
-    .update({ value: String(settings.OFFSET_A2) })
-    .where({ key: "OFFSET_A2" });
-  await db("settings")
-    .update({
-      value: String(settings.TEMPERATURE),
-    })
-    .where({ key: "TREF_A1" });
-  await db("settings")
-    .update({
-      value: String(settings.TEMPERATURE),
-    })
-    .where({ key: "TREF_A2" });
+  if (settings && settings.OFFSET_A1 > 0.2 && settings.OFFSET_A2 > 0.2) {
+    await db("settings")
+      .update({ value: String(settings.OFFSET_A1) })
+      .where({ key: "OFFSET_A1" });
+    await db("settings")
+      .update({ value: String(settings.OFFSET_A2) })
+      .where({ key: "OFFSET_A2" });
+    await db("settings")
+      .update({
+        value: String(settings.TEMPERATURE),
+      })
+      .where({ key: "TREF_A1" });
+    await db("settings")
+      .update({
+        value: String(settings.TEMPERATURE),
+      })
+      .where({ key: "TREF_A2" });
 
-  await db("calibrate-snaps").insert({
-    temperature: settings.TEMPERATURE,
-    a1: settings.OFFSET_A1,
-    a2: settings.OFFSET_A2,
-    shift_a1: settings.A1,
-    shift_a2: settings.A2,
-  });
+    await db("calibrate-snaps").insert({
+      temperature: settings.TEMPERATURE,
+      a1: settings.OFFSET_A1,
+      a2: settings.OFFSET_A2,
+      shift_a1: settings.A1,
+      shift_a2: settings.A2,
+    });
 
-  return settings;
+    return settings;
+  }
 };
 
 module.exports = calibrate;
