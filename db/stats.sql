@@ -59,12 +59,12 @@ GROUP BY
 -- for recalibrate
 select
 	DATE_FORMAT(CONVERT_TZ( a.`timestamp`, 'UTC', 'Europe/Rome'), '%Y-%m-%d h%H') AS `timegroup`,
-	count(*) as snaps, 
+	count(*) as snaps,
+	round(avg(b.temperature), 2) as TEMPERATURE,
 	truncate(avg(a.ch5), 4) as OFFSET_A1,
 	truncate(avg(a.ch6), 4) as OFFSET_A2,
 	avg(b.b1_current) as A1,
-	avg(b.b2_current) as A2,
-	round(avg(b.temperature), 2) as TEMPERATURE
+	avg(b.b2_current) as A2
 from
 	`pi-gpio`.`battery-snaps` b
 join `pi-gpio`.`adc-snaps` a on
