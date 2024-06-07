@@ -2,12 +2,17 @@ require("dotenv").config();
 
 const axios = require("axios");
 const winston = require("winston");
+const cron = require("node-cron");
 const Gpio = require("pigpio").Gpio;
 const { exec, execSync } = require("child_process");
 const db = require("./db");
 const telegram = require("./telegram");
+const recalibrateCurrentSensor = require("./calibrate");
 
 const apiToken = process.env.API_TOKEN;
+
+const shareInterval = process.env.SHARE_INTERVAL || "* * * * *";
+const recalibrateInterval = process.env.RECALIBRATE_INTERVAL || "0 * * * *";
 
 // Imposta il numero del pin GPIO che desideri utilizzare
 const pinShare = 18;
@@ -94,8 +99,8 @@ const share = async () => {
       WHERE\
         timestamp> (NOW() - INTERVAL ${process.env.REALTIME_MINUTES} MINUTE)\
       ORDER BY\
-        id ASC\
-      LIMIT 500;`
+        id ASC;`
+      // LIMIT 500;
     );
 
     const data = {
@@ -113,7 +118,9 @@ const share = async () => {
 
     pulseConnection.servoWrite(pulseWidth);
 
-    telegram.start();
+    telegram.start({
+      onCalibrateRequest: recalibrateCurrentSensor,
+    });
   } catch (e) {
     console.log(e.message);
     pulseConnection.digitalWrite(0);
@@ -121,8 +128,7 @@ const share = async () => {
   pwmShare.hardwarePwmWrite(frequency, 0);
 };
 
-setInterval(share, Number(process.env.SHARE_INTERVAL) * 1000);
-
+cron.schedule(shareInterval, share);
 share();
 
 // BUTTONS
@@ -165,6 +171,9 @@ if (process.env.ENABLE_BUTTONS === "true") {
   };
   setInterval(clearLedButtons, 100);
 }
+
+// CRON - re-calibrating
+cron.schedule(recalibrateInterval, recalibrateCurrentSensor);
 
 // LOGGER
 const logger = winston.createLogger({

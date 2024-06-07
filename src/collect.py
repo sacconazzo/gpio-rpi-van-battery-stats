@@ -6,7 +6,7 @@ import sched
 import time
 import math
 import mysql.connector
-import logging
+# import logging
 
 load_dotenv()
 
@@ -19,7 +19,7 @@ b1c = MCP3008(5)
 b2c = MCP3008(6)
 bt0 = MCP3008(7)
 
-adcP = DigitalOutputDevice(27)
+# adcP = DigitalOutputDevice(27)
 pot0 = PWMLED(14)
 
 # adcP.on()
@@ -45,23 +45,21 @@ def gpio(sc, start_time):
         value = row[1] 
         settings[key] = value
 
+    interval = int(settings.get("INTERVAL", os.getenv("INTERVAL"))) # interval time btw 
     vref = float(settings.get("VREF", os.getenv("VREF"))) # VCC
-    trefL = float(settings.get("TREF_LEFT", os.getenv("TREF_LEFT"))) # temperature ref for drift current sensor (see datasheet WCS1700)
-    trefR = float(settings.get("TREF_RIGHT", os.getenv("TREF_RIGHT"))) # temperature ref for drift current sensor (see datasheet WCS1700)
-    offsetV0 = float(settings.get("OFFSET_V0", os.getenv("OFFSET_V0"))) # offset adj.
-    offsetV1 = float(settings.get("OFFSET_V1", os.getenv("OFFSET_V1"))) # offset adj.
-    offsetV2 = float(settings.get("OFFSET_V2", os.getenv("OFFSET_V2"))) # offset adj.
     coeffV0 = float(settings.get("COEFF_V0", os.getenv("COEFF_V0"))) # (R1 + R2) / R2
     coeffV1 = float(settings.get("COEFF_V1", os.getenv("COEFF_V1"))) # (R1 + R2) / R2
     coeffV2 = float(settings.get("COEFF_V2", os.getenv("COEFF_V2"))) # (R1 + R2) / R2
+    trefA1 = float(settings.get("TREF_A1", os.getenv("TREF_A1"))) # temperature ref for drift current sensor (see datasheet WCS1700)
+    trefA2 = float(settings.get("TREF_A2", os.getenv("TREF_A2"))) # temperature ref for drift current sensor (see datasheet WCS1700)
     offsetA1 = float(settings.get("OFFSET_A1", os.getenv("OFFSET_A1"))) # basically 0.5 + offset adj. at TREF
     offsetA2 = float(settings.get("OFFSET_A2", os.getenv("OFFSET_A2"))) # basically 0.5 + offset adj. at TREF
     sensitA1 = float(settings.get("COEFF_A1", os.getenv("COEFF_A1"))) # mV/A -> sensitivity at TREF
     sensitA2 = float(settings.get("COEFF_A2", os.getenv("COEFF_A2"))) # mV/A -> sensitivity at TREF
-    driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # temp. drift per degree ref. to offset (valid out of TREF range)
-    driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # temp. drift per degree ref. to offset (valid out of TREF range)
+    driftA1 = float(settings.get("DRIFT_A1", os.getenv("DRIFT_A1"))) # drift temp. -> quadratic coef per °C ( offset + (tref - temp.) * coef)^2)
+    driftA2 = float(settings.get("DRIFT_A2", os.getenv("DRIFT_A2"))) # drift temp. -> quadratic coef per °C ( offset + (tref - temp.) * coef)^2)
 
-    interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # from 10 to 60 sec potentiometer source
+    # interval = int(10 + round(round(vol.value, 2) * 100 / 2, 0)) # from 10 to 60 sec potentiometer source
     snapshots = int(round(interval * 10 * 0.8, 0))
 
     print("Start reading sensors at " + str(start_time) + "... (next in " + str(interval) + " seconds)")
@@ -110,7 +108,7 @@ def gpio(sc, start_time):
     # Rt = 10000  # Used for Testing. Setting Rt=10k should give TempC=25
     
     # Steinhart - Hart Equation
-    if t0 > 0 or t0 < 1:
+    if t0 > 0.01 and t0 < 1:
       t0K = 1 / (A + (B * math.log(Rt)) + C * math.pow(math.log(Rt), 3))
     else:
       t0K = 273.15
@@ -119,25 +117,23 @@ def gpio(sc, start_time):
     t0C = t0K - 273.15
 
     # Voltage
-    v0 = ((vn0 / snapshots) + offsetV0) * vref * coeffV0
+    v0 = (vn0 / snapshots) * vref * coeffV0
     if v0 < 0:
       v0 = 0
 
-    v1 = ((vn1 / snapshots) + offsetV1) * vref * coeffV1
+    v1 = (vn1 / snapshots) * vref * coeffV1
     if v1 < 0:
       v1 = 0
 
-    v2 = ((vn2 / snapshots) + offsetV2) * vref * coeffV2
+    v2 = (vn2 / snapshots) * vref * coeffV2
     if v2 < 0:
       v2 = 0
 
     # Current
-    if (t0C < trefL):
-      offsetA1 = offsetA1 + ((trefL - t0C) * driftA1) # temp. drift
-      offsetA2 = offsetA2 + ((trefL - t0C) * driftA2) # temp. drift
-    if (t0C > trefR):
-      offsetA1 = offsetA1 - ((trefR - t0C) * driftA1) # temp. drift
-      offsetA2 = offsetA2 - ((trefR - t0C) * driftA2) # temp. drift
+    # offsetA1 = offsetA1 + math.pow((tref - t0C) * driftA1, 2) # temp. drift exp.
+    # offsetA2 = offsetA2 + math.pow((tref - t0C) * driftA2, 2) # temp. drift exp.
+    offsetA1 = offsetA1 + (trefA1 - t0C) * driftA1 # temp. drift linear
+    offsetA2 = offsetA2 + (trefA2 - t0C) * driftA2 # temp. drift linear
 
     coeffA1 = sensitA1 / offsetA1 * 0.5 # adj. sensit with offset
     a1 = ((an1 / snapshots) - offsetA1) * vref * coeffA1
@@ -149,8 +145,12 @@ def gpio(sc, start_time):
     if (an2 / snapshots) < 0.05:
       a2 = 0
 
+    print("A1 offset: " + str(offsetA1) + ", sensitivity: " + str(coeffA1))
+    print("A2 offset: " + str(offsetA2) + ", sensitivity: " + str(coeffA2))
+
     print("Collected data of " + str(snapshots) + " snapshots")
 
+    # if (v0 > 1 and v1 > 1 and v2 > 1): # check battery connected and sensor errors
     sql = "INSERT INTO `battery-snaps` (bm_voltage, b1_voltage, b2_voltage, b1_current, b2_current, coeff, temperature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     values = (v0, v1, v2, a1, a2, interval / 60 / 60, t0C)
     mycursor.execute(sql, values)

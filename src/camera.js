@@ -12,7 +12,7 @@ const movementSensor = new Gpio(pinMovement, { mode: Gpio.INPUT });
 
 let startInterval;
 
-const shot = async (fileName) => {
+const shot = async ({ fileName, shutter }) => {
   const [[{ lux }]] = await db.raw(
     `SELECT\
       ch4 as lux\
@@ -24,6 +24,7 @@ const shot = async (fileName) => {
   );
 
   const opt = () => {
+    if (shutter) return `--shutter ${shutter}`;
     if (lux > 0.1) return "";
     if (lux > 0.018) return "--shutter 5000000";
     return `--shutter 5000000 --gain ${Math.round(36 - lux * 2 * 1000)}`;
@@ -47,7 +48,7 @@ module.exports = {
         if (movement) {
           const fileName = `./camera/${new Date().toISOString()}.jpg`;
 
-          await shot(fileName);
+          await shot({ fileName });
 
           onMovement(fileName);
         }
@@ -65,8 +66,9 @@ module.exports = {
 
   picture: async ({
     fileName = `./camera/${new Date().toISOString()}.jpg`,
+    shutter,
   } = {}) => {
-    await shot(fileName);
+    await shot({ fileName, shutter });
 
     return fileName;
   },

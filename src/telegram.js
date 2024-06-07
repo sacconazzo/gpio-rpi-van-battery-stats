@@ -11,6 +11,8 @@ const bot = new Telegraf(token);
 
 let isStarted = false;
 
+const events = {};
+
 // Start command
 bot.start(async (ctx) => {
   try {
@@ -39,9 +41,27 @@ const isAuthorized = async (ctx, next) => {
 
 bot.use(isAuthorized);
 
+bot.command("calibrate", async (ctx) => {
+  try {
+    await ctx.reply(`Current sensor recalibrate: please wait...`);
+
+    const setup = await events.onCalibrateRequest();
+
+    await ctx.reply(
+      `Current sensor recalibrate:\n${
+        setup ? JSON.stringify(setup) : "not enough data"
+      }`
+    );
+  } catch (e) {
+    console.error(e);
+  }
+});
+
 bot.command("billy", async (ctx) => {
   try {
-    const source = await campera.picture();
+    const shutter = ctx.message.text.split(" ")[1];
+
+    const source = await campera.picture({ shutter });
 
     await ctx.replyWithPhoto({ source });
     await campera.delete(source);
@@ -112,7 +132,9 @@ bot.command("poweroff", async (ctx) => {
 });
 
 module.exports = {
-  start: () => {
+  start: (setup) => {
+    events.onCalibrateRequest = setup.onCalibrateRequest;
+
     if (!isStarted) bot.launch();
     isStarted = true;
   },
