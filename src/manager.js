@@ -7,7 +7,7 @@ const Gpio = require("pigpio").Gpio;
 const { exec, execSync } = require("child_process");
 const db = require("./db");
 const telegram = require("./telegram");
-const recalibrateCurrentSensor = require("./calibrate");
+const { calibrate } = require("./calibrate");
 
 const apiToken = process.env.API_TOKEN;
 
@@ -173,7 +173,7 @@ if (process.env.ENABLE_BUTTONS === "true") {
 }
 
 // CRON - re-calibrating
-cron.schedule(recalibrateInterval, recalibrateCurrentSensor);
+cron.schedule(recalibrateInterval, calibrate);
 
 // LOGGER
 const logger = winston.createLogger({
