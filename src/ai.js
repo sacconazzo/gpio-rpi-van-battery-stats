@@ -51,8 +51,8 @@ const aai = async () => {
       : [];
 
   return {
-    OFFSET_A1: calibration[0],
-    OFFSET_A2: calibration[1],
+    OFFSET_A1: calibration[0] ? Number(calibration[0]).toFixed(4) : undefined,
+    OFFSET_A2: calibration[1] ? Number(calibration[1]).toFixed(4) : undefined,
   };
 };
 
