@@ -99,10 +99,10 @@ const calibrateAI = async () => {
 
   if (settings && settings.OFFSET_A1 > 0.2 && settings.OFFSET_A2 > 0.2) {
     await db("settings")
-      .update({ value: String(settings.OFFSET_A1) })
+      .update({ value: settings.OFFSET_A1 })
       .where({ key: "OFFSET_A1" });
     await db("settings")
-      .update({ value: String(settings.OFFSET_A2) })
+      .update({ value: settings.OFFSET_A2 })
       .where({ key: "OFFSET_A2" });
     // await db("settings")
     //   .update({
