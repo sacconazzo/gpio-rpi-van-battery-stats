@@ -7,12 +7,13 @@ const Gpio = require("pigpio").Gpio;
 const { exec, execSync } = require("child_process");
 const db = require("./db");
 const telegram = require("./telegram");
-const recalibrateCurrentSensor = require("./calibrate");
+const { calibrate, calibrateAI } = require("./calibrate");
 
 const apiToken = process.env.API_TOKEN;
 
 const shareInterval = process.env.SHARE_INTERVAL || "* * * * *";
-const recalibrateInterval = process.env.RECALIBRATE_INTERVAL || "0 * * * *";
+const recalibrateInterval = process.env.RECALIBRATE_INTERVAL || "0 0-9 * * *";
+const recalAIInterval = process.env.RECALIBRATE_AI_INTERVAL || "0 10-23 * * *";
 
 // Imposta il numero del pin GPIO che desideri utilizzare
 const pinShare = 18;
@@ -173,7 +174,8 @@ if (process.env.ENABLE_BUTTONS === "true") {
 }
 
 // CRON - re-calibrating
-cron.schedule(recalibrateInterval, recalibrateCurrentSensor);
+cron.schedule(recalibrateInterval, calibrate);
+cron.schedule(recalAIInterval, calibrateAI);
 
 // LOGGER
 const logger = winston.createLogger({
