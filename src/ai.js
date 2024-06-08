@@ -7,7 +7,7 @@ const openai = new OpenAIApi.OpenAI({ key: apiKey });
 const aai = async () => {
   const [signals] = await db.raw(
     `SELECT\
-      ch5, ch6, ch7\
+      ch5, ch6\
     FROM\
     \`adc-snaps\`\
     WHERE\
@@ -27,7 +27,7 @@ const aai = async () => {
         role: "user",
         content:
           "Ti fornirò un array in formato stringificato, avrà 2 campi, ch5 e ch6, rappresentano il valore grezzo dei sensori di corrente. " +
-          "Il campo ch7 è solo un dettaglio aggiuntivo, il valore grazzo da un termistore per quel determinato snapshot, la temperatura potrebbe influire con i valori dei sensori di corrente. " +
+          // "Il campo ch7 è solo un dettaglio aggiuntivo, il valore grazzo da un termistore per quel determinato snapshot, la temperatura potrebbe influire con i valori dei sensori di corrente. " +
           "Uno snapshot ogni 20 secondi. l'ultimo elemento il più recente. " +
           "In linea teorica un valore vicino a 0.5 indica che non c'è flusso di corrente, mentre spostandosi da quel valore potrebbe esserci assorbimento o ricarica. " +
           "I sensori sono collegati a 2 batterie al litio in un van e a pannello solare che potrebbe caricare o meno dipende dal sole e dallo stato di ricarica, le batterie sono anche collegati ai servizi del van. " +
