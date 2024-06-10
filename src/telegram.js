@@ -57,7 +57,7 @@ bot.command("calibrate", async (ctx) => {
   }
 });
 
-bot.command("billy", async (ctx) => {
+bot.command("shoot", async (ctx) => {
   try {
     const shutter = ctx.message.text.split(" ")[1];
 
