@@ -135,12 +135,14 @@ def gpio(sc, start_time):
     offsetA1 = offsetA1 + (trefA1 - t0C) * driftA1 # temp. drift linear
     offsetA2 = offsetA2 + (trefA2 - t0C) * driftA2 # temp. drift linear
 
-    coeffA1 = sensitA1 / offsetA1 * 0.5 # adj. sensit with offset
+    # sensitA1 / offsetA1 * 0.5 # adj. sensit with offset
+    coeffA1 = sensitA1
     a1 = ((an1 / snapshots) - offsetA1) * vref * coeffA1
     if (an1 / snapshots) < 0.05:
       a1 = 0
 
-    coeffA2 = sensitA2 / offsetA2 * 0.5 # adj. sensit with offset
+    # sensitA2 / offsetA2 * 0.5 # adj. sensit with offset
+    coeffA2 = sensitA2
     a2 = ((an2 / snapshots) - offsetA2) * vref * coeffA2
     if (an2 / snapshots) < 0.05:
       a2 = 0
