@@ -75,6 +75,8 @@ const share = async () => {
         round(max(b2_voltage), 2) b2Vmax,\
         round(sum(b1_current * coeff), 1) AS b1Ah,\
         round(sum(b2_current * coeff), 1) AS b2Ah,\
+        round(sum(b1_current * coeff * b1_voltage), 1) AS b1Wh,\
+        round(sum(b2_current * coeff * b2_voltage), 1) AS b2Wh,\
         round(avg(temperature), 2) temp,\
         round(min(temperature), 2) tempMin,\
         round(max(temperature), 2) tempMax\
