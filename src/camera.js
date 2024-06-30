@@ -64,6 +64,8 @@ module.exports = {
     clearInterval(startInterval);
   },
 
+  isRunning: () => startInterval && !startInterval?._destroyed,
+
   picture: async ({
     fileName = `./camera/${new Date().toISOString()}.jpg`,
     shutter,
