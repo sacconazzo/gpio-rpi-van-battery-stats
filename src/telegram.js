@@ -85,6 +85,17 @@ bot.command("motion_on", async (ctx) => {
           console.error(e);
         }
       },
+      onPingTrigger: async () => {
+        try {
+          campera.stop();
+
+          await ctx.reply("Motion sensor OFF");
+
+          console.log("Motion sensor OFF");
+        } catch (e) {
+          console.error(e);
+        }
+      },
     });
 
     await ctx.reply("Motion sensor ON");

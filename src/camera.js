@@ -10,6 +10,8 @@ const pinMovement = 20;
 const movementVCC = new Gpio(pinVCC, { mode: Gpio.OUTPUT });
 const movementSensor = new Gpio(pinMovement, { mode: Gpio.INPUT });
 
+const triggerSensorHost = process.env.TRIGGER_SENSOR_HOST;
+
 let startInterval;
 
 const shot = async ({ fileName, shutter }) => {
@@ -36,7 +38,10 @@ const shot = async ({ fileName, shutter }) => {
 };
 
 module.exports = {
-  start: ({ onMovement = (f) => console.log(`created: ${f}`) }) => {
+  start: ({
+    onMovement = (f) => console.log(`created: ${f}`),
+    onPingTrigger = () => console.log("sensor off"),
+  }) => {
     clearInterval(startInterval);
 
     movementVCC.digitalWrite(1);
@@ -52,7 +57,15 @@ module.exports = {
 
           onMovement(fileName);
         }
+
+        try {
+          await exec(`ping ${triggerSensorHost} -c 1`);
+
+          onPingTrigger();
+        } catch {}
       } catch (e) {
+        console.log(e);
+        console.log("lazzio");
         console.error(e);
       }
     }, 10000);
