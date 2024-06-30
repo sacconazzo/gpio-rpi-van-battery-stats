@@ -40,7 +40,7 @@ const shot = async ({ fileName, shutter }) => {
 module.exports = {
   start: ({
     onMovement = (f) => console.log(`created: ${f}`),
-    onPingTrigger = () => console.log("sensor off"),
+    onPingTrigger = ({ ok }) => console.log(`ping completed: ${ok}`),
   }) => {
     clearInterval(startInterval);
 
@@ -59,13 +59,13 @@ module.exports = {
         }
 
         try {
-          await exec(`ping ${triggerSensorHost} -c 1`);
+          const { stdout } = await exec(`ping ${triggerSensorHost} -c 1`);
 
-          onPingTrigger();
-        } catch {}
+          onPingTrigger({ ok: true, stdout });
+        } catch (e) {
+          onPingTrigger({ ok: false, stdout: e.stdout });
+        }
       } catch (e) {
-        console.log(e);
-        console.log("lazzio");
         console.error(e);
       }
     }, 10000);
