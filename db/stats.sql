@@ -13,7 +13,7 @@ SELECT
 	round(sum(`b1_current` * `coeff`), 2) AS b1Ah,
 	round(sum(`b2_current` * `coeff`), 2) AS b2Ah,
 	round(sum(`b1_current` * `coeff` * `b1_voltage`), 2) AS b1Wh,
-	round(sum(`b2_current` * `coeff `* `b2_voltage`), 2) AS b2Wh,
+	round(sum(`b2_current` * `coeff` * `b2_voltage`), 2) AS b2Wh,
 	round(avg(temperature), 1) temp,
 	round(min(temperature), 1) tempMin,
 	round(max(temperature), 1) tempMax
