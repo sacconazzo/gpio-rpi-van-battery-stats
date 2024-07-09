@@ -83,7 +83,7 @@ const share = async () => {
       FROM\
         \`battery-snaps\`\
       WHERE\
-        date(timestamp)> (NOW() - INTERVAL 7 DAY)\
+        date(timestamp)> (NOW() - INTERVAL 14 DAY)\
       GROUP BY\
         day;`
     );
