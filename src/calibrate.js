@@ -1,6 +1,15 @@
 const db = require("./db");
 const ai = require("./ai");
 
+const getSettingsVars = async () => {
+  const vars = await db("settings");
+
+  return vars.reduce((o, e) => {
+    o[e.key] = Number(e.value);
+    return o;
+  }, {});
+};
+
 const calibrate = async ({ force = true, tentative = 1 } = {}) => {
   if (force) {
     const [[spread]] = await db.raw(
@@ -61,11 +70,19 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
   console.log(`Current sensor recalibrate: ${JSON.stringify(settings)}`);
 
   if (settings && settings.OFFSET_A1 > 0.2 && settings.OFFSET_A2 > 0.2) {
+    const vars = await getSettingsVars();
+
+    const idleA1 = vars["IDLE_A"] / (vars["VREF"] * vars["COEFF_A1"]);
+    const idleA2 = vars["IDLE_A"] / (vars["VREF"] * vars["COEFF_A2"]);
+
+    settings.OFFSET_A1 = (settings.OFFSET_A1 + idleA1).toFixed(4);
+    settings.OFFSET_A2 = (settings.OFFSET_A2 + idleA2).toFixed(4);
+
     await db("settings")
-      .update({ value: String(settings.OFFSET_A1) })
+      .update({ value: settings.OFFSET_A1 })
       .where({ key: "OFFSET_A1" });
     await db("settings")
-      .update({ value: String(settings.OFFSET_A2) })
+      .update({ value: settings.OFFSET_A2 })
       .where({ key: "OFFSET_A2" });
     // await db("settings")
     //   .update({
@@ -127,4 +144,4 @@ const calibrateAI = async () => {
   }
 };
 
-module.exports = { calibrate, calibrateAI };
+module.exports = { calibrate, calibrateAI, getVars };
