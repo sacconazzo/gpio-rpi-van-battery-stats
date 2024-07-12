@@ -144,4 +144,4 @@ const calibrateAI = async () => {
   }
 };
 
-module.exports = { calibrate, calibrateAI, getVars };
+module.exports = { calibrate, calibrateAI };
