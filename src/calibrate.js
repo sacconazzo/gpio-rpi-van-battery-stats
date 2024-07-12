@@ -67,16 +67,16 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
     await db("settings")
       .update({ value: String(settings.OFFSET_A2) })
       .where({ key: "OFFSET_A2" });
-    await db("settings")
-      .update({
-        value: String(settings.TEMPERATURE),
-      })
-      .where({ key: "TREF_A1" });
-    await db("settings")
-      .update({
-        value: String(settings.TEMPERATURE),
-      })
-      .where({ key: "TREF_A2" });
+    // await db("settings")
+    //   .update({
+    //     value: String(settings.TEMPERATURE),
+    //   })
+    //   .where({ key: "TREF_A1" });
+    // await db("settings")
+    //   .update({
+    //     value: String(settings.TEMPERATURE),
+    //   })
+    //   .where({ key: "TREF_A2" });
 
     await db("calibrate-snaps").insert({
       temperature: settings.TEMPERATURE,
