@@ -196,7 +196,8 @@ const logger = winston.createLogger({
 
 // override console methods
 ["log", "error", "warn", "info"].forEach((method) => {
-  console[method] = (m) => logger[method === "log" ? "info" : method](m);
+  console[method] = (m, ...a) =>
+    logger[method === "log" ? "info" : method](m, ...a);
 });
 
 // END OF PROCESS
