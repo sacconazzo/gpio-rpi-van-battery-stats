@@ -1,4 +1,4 @@
-const { conn, getSettingsVars } = require("./db");
+const { conn, getSettingsVars } = require("../db");
 const ai = require("./ai");
 
 const calibrate = async ({ force = true, tentative = 1 } = {}) => {

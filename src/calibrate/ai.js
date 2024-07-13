@@ -1,4 +1,4 @@
-const db = require("./db");
+const db = require("../db");
 const OpenAIApi = require("openai");
 
 const apiKey = process.env.OPENAI_API_KEY;

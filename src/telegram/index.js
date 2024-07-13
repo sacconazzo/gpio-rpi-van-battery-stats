@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const { Telegraf } = require("telegraf");
 const { exec } = require("child_process");
-const campera = require("./camera");
+const campera = require("../camera");
 
 // Token bot Telegram from BotFather
 const token = process.env.TELEGRAM_TOKEN;

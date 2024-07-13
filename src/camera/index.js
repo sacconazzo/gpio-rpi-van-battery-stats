@@ -2,7 +2,7 @@ const Gpio = require("pigpio").Gpio;
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 const { execSync } = require("child_process");
-const db = require("./db");
+const db = require("../db");
 
 const pinVCC = 26;
 const pinMovement = 20;
