@@ -33,7 +33,7 @@ const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
     }
   }
 
-  const [[settings]] = await conn.raw(
+  const [[data]] = await conn.raw(
     `select\
     count(*) as snaps,
     truncate(avg(a.ch5), 4) as OFFSET_A1,\
@@ -59,71 +59,59 @@ const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
       }`
   );
 
-  console.log(`Current sensor recalibrate: ${JSON.stringify(settings)}`);
+  console.log(`Current sensor recalibrate: ${JSON.stringify(data)}`);
 
-  if (settings && settings.OFFSET_A1 > 0.2 && settings.OFFSET_A2 > 0.2) {
+  if (data && data.OFFSET_A1 > 0.2 && data.OFFSET_A2 > 0.2) {
     const vars = await getSettingsVars();
 
     const baseA = Number(absorption) || vars["IDLE_A"];
     const offsetBaseA1 = baseA / 2 / (vars["VREF"] * vars["COEFF_A1"]);
     const offsetBaseA2 = baseA / 2 / (vars["VREF"] * vars["COEFF_A2"]);
 
-    settings.OFFSET_A1 = (settings.OFFSET_A1 + offsetBaseA1).toFixed(4);
-    settings.OFFSET_A2 = (settings.OFFSET_A2 + offsetBaseA2).toFixed(4);
+    data.OFFSET_A1 = (data.OFFSET_A1 + offsetBaseA1).toFixed(4);
+    data.OFFSET_A2 = (data.OFFSET_A2 + offsetBaseA2).toFixed(4);
 
     await conn("settings")
-      .update({ value: settings.OFFSET_A1 })
+      .update({ value: data.OFFSET_A1 })
       .where({ key: "OFFSET_A1" });
     await conn("settings")
-      .update({ value: settings.OFFSET_A2 })
+      .update({ value: data.OFFSET_A2 })
       .where({ key: "OFFSET_A2" });
 
     await conn("calibrate-snaps").insert({
-      temperature: settings.TEMPERATURE,
-      a1: settings.OFFSET_A1,
-      a2: settings.OFFSET_A2,
-      shift_a1: settings.A1,
-      shift_a2: settings.A2,
+      temperature: data.TEMPERATURE,
+      a1: data.OFFSET_A1,
+      a2: data.OFFSET_A2,
+      shift_a1: data.A1,
+      shift_a2: data.A2,
     });
 
-    return settings;
+    return data;
   }
 };
 
 const calibrateAI = async () => {
-  const settings = await ai();
+  const data = await ai();
 
   console.log(
-    `Current sensor recalibrate from AI: ${JSON.stringify(settings)}`
+    `Current sensor recalibrate from AI: ${JSON.stringify(data)}`
   );
 
-  if (settings && settings.OFFSET_A1 > 0.2 && settings.OFFSET_A2 > 0.2) {
+  if (data && data.OFFSET_A1 > 0.2 && data.OFFSET_A2 > 0.2) {
     await conn("settings")
-      .update({ value: settings.OFFSET_A1 })
+      .update({ value: data.OFFSET_A1 })
       .where({ key: "OFFSET_A1" });
     await conn("settings")
-      .update({ value: settings.OFFSET_A2 })
+      .update({ value: data.OFFSET_A2 })
       .where({ key: "OFFSET_A2" });
-    // await conn("settings")
-    //   .update({
-    //     value: String(settings.TEMPERATURE),
-    //   })
-    //   .where({ key: "TREF_A1" });
-    // await conn("settings")
-    //   .update({
-    //     value: String(settings.TEMPERATURE),
-    //   })
-    //   .where({ key: "TREF_A2" });
 
     await conn("calibrate-snaps").insert({
-      temperature: settings.TEMPERATURE,
-      a1: settings.OFFSET_A1,
-      a2: settings.OFFSET_A2,
-      // shift_a1: settings.A1,
-      // shift_a2: settings.A2,
+      temperature: data.TEMPERATURE,
+      a1: data.OFFSET_A1,
+      a2: data.OFFSET_A2,
     });
 
-    return settings;
+    return data;
   }
 };
 
