@@ -57,6 +57,7 @@ bot.command("c", async (ctx) => {
       }`
     );
   } catch (e) {
+    console.log(e);
     console.error(e);
   }
 });
@@ -151,6 +152,7 @@ bot.command("poweroff", async (ctx) => {
 module.exports = {
   start: (setup) => {
     events.onCalibrateRequest = setup.onCalibrateRequest;
+    events.onCalibrateAIRequest = setup.onCalibrateAIRequest;
 
     if (!isStarted) bot.launch();
     isStarted = true;
