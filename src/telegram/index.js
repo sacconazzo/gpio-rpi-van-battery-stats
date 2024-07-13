@@ -45,10 +45,10 @@ bot.command("c", async (ctx) => {
   try {
     await ctx.reply(`Current sensor recalibrate: please wait...`);
 
-    const absorption = ctx.message.text.split(" ")[1];
+    const absorption = ctx.message.text.split(" ")[1] || "";
 
     const setup = isNaN(absorption)
-      ? await events.onCalibrateRequestAI()
+      ? await events.onCalibrateAIRequest()
       : await events.onCalibrateRequest({ absorption });
 
     await ctx.reply(
@@ -57,7 +57,6 @@ bot.command("c", async (ctx) => {
       }`
     );
   } catch (e) {
-    console.log(e);
     console.error(e);
   }
 });
