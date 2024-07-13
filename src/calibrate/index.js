@@ -93,9 +93,7 @@ const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
 const calibrateAI = async () => {
   const data = await ai();
 
-  console.log(
-    `Current sensor recalibrate from AI: ${JSON.stringify(data)}`
-  );
+  console.log(`Current sensor recalibrate from AI: ${JSON.stringify(data)}`);
 
   if (data && data.OFFSET_A1 > 0.2 && data.OFFSET_A2 > 0.2) {
     await conn("settings")
