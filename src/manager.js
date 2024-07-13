@@ -61,7 +61,7 @@ const share = async () => {
       ),
     };
 
-    const [dayWeek] = await db.raw(
+    const [dayWeek] = await db.conn.raw(
       `SELECT\
         date(CONVERT_TZ(timestamp, 'UTC', '${process.env.DB_TIMEZONE}')) AS day,\
         round(avg(bm_voltage), 2) bmV,\
@@ -88,7 +88,7 @@ const share = async () => {
         day;`
     );
 
-    const [realtime] = await db.raw(
+    const [realtime] = await db.conn.raw(
       `SELECT\
         CONVERT_TZ(timestamp, 'UTC', '${process.env.DB_TIMEZONE}') as timestamp,\
         round(bm_voltage, 2) AS bmV,\

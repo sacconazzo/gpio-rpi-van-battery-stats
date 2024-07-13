@@ -5,7 +5,7 @@ const apiKey = process.env.OPENAI_API_KEY;
 const openai = new OpenAIApi.OpenAI({ key: apiKey });
 
 const aai = async () => {
-  const [signals] = await db.raw(
+  const [signals] = await db.conn.raw(
     `SELECT\
       ch5, ch6\
     FROM\

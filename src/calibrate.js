@@ -1,18 +1,9 @@
-const db = require("./db");
+const { conn, getSettingsVars } = require("./db");
 const ai = require("./ai");
-
-const getSettingsVars = async () => {
-  const vars = await db("settings");
-
-  return vars.reduce((o, e) => {
-    o[e.key] = Number(e.value);
-    return o;
-  }, {});
-};
 
 const calibrate = async ({ force = true, tentative = 1 } = {}) => {
   if (force) {
-    const [[spread]] = await db.raw(
+    const [[spread]] = await conn.raw(
       `select\
         min(b.b1_current) as A1_MIN,\
         min(b.b2_current) as A2_MIN,\
@@ -41,7 +32,7 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
     }
   }
 
-  const [[settings]] = await db.raw(
+  const [[settings]] = await conn.raw(
     `select\
     count(*) as snaps,
     truncate(avg(a.ch5), 4) as OFFSET_A1,\
@@ -78,24 +69,24 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
     settings.OFFSET_A1 = (settings.OFFSET_A1 + idleA1).toFixed(4);
     settings.OFFSET_A2 = (settings.OFFSET_A2 + idleA2).toFixed(4);
 
-    await db("settings")
+    await conn("settings")
       .update({ value: settings.OFFSET_A1 })
       .where({ key: "OFFSET_A1" });
-    await db("settings")
+    await conn("settings")
       .update({ value: settings.OFFSET_A2 })
       .where({ key: "OFFSET_A2" });
-    // await db("settings")
+    // await conn("settings")
     //   .update({
     //     value: String(settings.TEMPERATURE),
     //   })
     //   .where({ key: "TREF_A1" });
-    // await db("settings")
+    // await conn("settings")
     //   .update({
     //     value: String(settings.TEMPERATURE),
     //   })
     //   .where({ key: "TREF_A2" });
 
-    await db("calibrate-snaps").insert({
+    await conn("calibrate-snaps").insert({
       temperature: settings.TEMPERATURE,
       a1: settings.OFFSET_A1,
       a2: settings.OFFSET_A2,
@@ -115,24 +106,24 @@ const calibrateAI = async () => {
   );
 
   if (settings && settings.OFFSET_A1 > 0.2 && settings.OFFSET_A2 > 0.2) {
-    await db("settings")
+    await conn("settings")
       .update({ value: settings.OFFSET_A1 })
       .where({ key: "OFFSET_A1" });
-    await db("settings")
+    await conn("settings")
       .update({ value: settings.OFFSET_A2 })
       .where({ key: "OFFSET_A2" });
-    // await db("settings")
+    // await conn("settings")
     //   .update({
     //     value: String(settings.TEMPERATURE),
     //   })
     //   .where({ key: "TREF_A1" });
-    // await db("settings")
+    // await conn("settings")
     //   .update({
     //     value: String(settings.TEMPERATURE),
     //   })
     //   .where({ key: "TREF_A2" });
 
-    await db("calibrate-snaps").insert({
+    await conn("calibrate-snaps").insert({
       temperature: settings.TEMPERATURE,
       a1: settings.OFFSET_A1,
       a2: settings.OFFSET_A2,
