@@ -65,11 +65,11 @@ const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
     const vars = await getSettingsVars();
 
     const baseA = Number(absorption) || vars["IDLE_A"];
-    const baseA1 = baseA / 2 / (vars["VREF"] * vars["COEFF_A1"]);
-    const baseA2 = baseA / 2 / (vars["VREF"] * vars["COEFF_A2"]);
+    const offsetBaseA1 = baseA / 2 / (vars["VREF"] * vars["COEFF_A1"]);
+    const offsetBaseA2 = baseA / 2 / (vars["VREF"] * vars["COEFF_A2"]);
 
-    settings.OFFSET_A1 = (settings.OFFSET_A1 + baseA1).toFixed(4);
-    settings.OFFSET_A2 = (settings.OFFSET_A2 + baseA2).toFixed(4);
+    settings.OFFSET_A1 = (settings.OFFSET_A1 + offsetBaseA1).toFixed(4);
+    settings.OFFSET_A2 = (settings.OFFSET_A2 + offsetBaseA2).toFixed(4);
 
     await conn("settings")
       .update({ value: settings.OFFSET_A1 })
@@ -77,16 +77,6 @@ const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
     await conn("settings")
       .update({ value: settings.OFFSET_A2 })
       .where({ key: "OFFSET_A2" });
-    // await conn("settings")
-    //   .update({
-    //     value: String(settings.TEMPERATURE),
-    //   })
-    //   .where({ key: "TREF_A1" });
-    // await conn("settings")
-    //   .update({
-    //     value: String(settings.TEMPERATURE),
-    //   })
-    //   .where({ key: "TREF_A2" });
 
     await conn("calibrate-snaps").insert({
       temperature: settings.TEMPERATURE,
