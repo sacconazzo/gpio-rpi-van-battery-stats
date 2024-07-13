@@ -63,8 +63,8 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
   if (settings && settings.OFFSET_A1 > 0.2 && settings.OFFSET_A2 > 0.2) {
     const vars = await getSettingsVars();
 
-    const idleA1 = vars["IDLE_A"] / (vars["VREF"] * vars["COEFF_A1"]);
-    const idleA2 = vars["IDLE_A"] / (vars["VREF"] * vars["COEFF_A2"]);
+    const idleA1 = vars["IDLE_A"] / 2 / (vars["VREF"] * vars["COEFF_A1"]);
+    const idleA2 = vars["IDLE_A"] / 2 / (vars["VREF"] * vars["COEFF_A2"]);
 
     settings.OFFSET_A1 = (settings.OFFSET_A1 + idleA1).toFixed(4);
     settings.OFFSET_A2 = (settings.OFFSET_A2 + idleA2).toFixed(4);
