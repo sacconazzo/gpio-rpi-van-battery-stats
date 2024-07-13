@@ -1,7 +1,7 @@
 const { conn, getSettingsVars } = require("../db");
 const ai = require("./ai");
 
-const calibrate = async ({ force = true, tentative = 1 } = {}) => {
+const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
   if (force) {
     const [[spread]] = await conn.raw(
       `select\
@@ -28,6 +28,7 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
       return calibrate({
         force: force && tentative <= 24,
         tentative: tentative + 1,
+        absorption,
       });
     }
   }
@@ -63,11 +64,12 @@ const calibrate = async ({ force = true, tentative = 1 } = {}) => {
   if (settings && settings.OFFSET_A1 > 0.2 && settings.OFFSET_A2 > 0.2) {
     const vars = await getSettingsVars();
 
-    const idleA1 = vars["IDLE_A"] / 2 / (vars["VREF"] * vars["COEFF_A1"]);
-    const idleA2 = vars["IDLE_A"] / 2 / (vars["VREF"] * vars["COEFF_A2"]);
+    const baseA = Number(absorption) || vars["IDLE_A"];
+    const baseA1 = baseA / 2 / (vars["VREF"] * vars["COEFF_A1"]);
+    const baseA2 = baseA / 2 / (vars["VREF"] * vars["COEFF_A2"]);
 
-    settings.OFFSET_A1 = (settings.OFFSET_A1 + idleA1).toFixed(4);
-    settings.OFFSET_A2 = (settings.OFFSET_A2 + idleA2).toFixed(4);
+    settings.OFFSET_A1 = (settings.OFFSET_A1 + baseA1).toFixed(4);
+    settings.OFFSET_A2 = (settings.OFFSET_A2 + baseA2).toFixed(4);
 
     await conn("settings")
       .update({ value: settings.OFFSET_A1 })

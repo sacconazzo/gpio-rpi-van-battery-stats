@@ -41,11 +41,14 @@ const isAuthorized = async (ctx, next) => {
 
 bot.use(isAuthorized);
 
-bot.command("calibrate", async (ctx) => {
+bot.command("c", async (ctx) => {
   try {
     await ctx.reply(`Current sensor recalibrate: please wait...`);
 
-    const setup = await events.onCalibrateRequest();
+    const absorption = ctx.message.text.split(" ")[1];
+
+    // const setup = await events.onCalibrateRequestAI();
+    const setup = await events.onCalibrateRequest({ absorption });
 
     await ctx.reply(
       `Current sensor recalibrate:\n${

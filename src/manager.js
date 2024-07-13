@@ -122,7 +122,8 @@ const share = async () => {
     pulseConnection.servoWrite(pulseWidth);
 
     telegram.start({
-      onCalibrateRequest: calibrateAI,
+      onCalibrateRequest: calibrate,
+      onCalibrateAIRequest: calibrateAI,
     });
   } catch (e) {
     console.log(e.message);
