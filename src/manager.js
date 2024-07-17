@@ -101,6 +101,9 @@ const share = async () => {
       \`battery-snaps\`\
       WHERE\
         timestamp> (NOW() - INTERVAL ${process.env.REALTIME_MINUTES} MINUTE)\
+        and b1_voltage > 10\
+	      and b2_voltage > 10\
+	      and bm_voltage > 10\
       ORDER BY\
         id ASC;`
       // LIMIT 500;

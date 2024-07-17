@@ -1,6 +1,8 @@
 -- day week
 SELECT
-	date(CONVERT_TZ( `timestamp`, 'UTC', 'Europe/Rome')) AS data,
+	date(CONVERT_TZ( `timestamp`,
+	'UTC',
+	'Europe/Rome')) AS data,
 	round(avg(bm_voltage), 2) bmV,
 	round(min(bm_voltage), 2) bmVmin,
 	round(max(bm_voltage), 2) bmVmax,
@@ -21,6 +23,9 @@ FROM
 	`battery-snaps`
 WHERE
 	date(timestamp)> (NOW() - INTERVAL 14 DAY)
+	and b1_voltage > 10
+	and b2_voltage > 10
+	and bm_voltage > 10
 GROUP BY
 	data;
 
