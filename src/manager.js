@@ -84,6 +84,9 @@ const share = async () => {
         \`battery-snaps\`\
       WHERE\
         date(timestamp)> (NOW() - INTERVAL 14 DAY)\
+        and b1_voltage > 9\
+	      and b2_voltage > 9\
+	      and bm_voltage > 9\
       GROUP BY\
         day;`
     );
@@ -101,9 +104,9 @@ const share = async () => {
       \`battery-snaps\`\
       WHERE\
         timestamp> (NOW() - INTERVAL ${process.env.REALTIME_MINUTES} MINUTE)\
-        and b1_voltage > 10\
-	      and b2_voltage > 10\
-	      and bm_voltage > 10\
+        and b1_voltage > 9\
+	      and b2_voltage > 9\
+	      and bm_voltage > 9\
       ORDER BY\
         id ASC;`
       // LIMIT 500;
