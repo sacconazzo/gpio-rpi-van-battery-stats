@@ -131,5 +131,3 @@ https://api.giona.tech/domotica/battery
 <img src="res/img/dashboard.png" alt="web app" width="100%" />
 
 https://sacconazzo.altervista.org/#battery
-
-https://giona.tech
