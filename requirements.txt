@@ -1,3 +1,2 @@
 gpiozero
-dotenv
 mysql-connector-python
