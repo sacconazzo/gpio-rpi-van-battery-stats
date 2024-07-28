@@ -44,7 +44,8 @@
 ### Software
 
 - enable serial port interface via `sudo rspi-config`
-- install this repo in your rpi home (including Python dependencies manually)
+- clone this repo in your rpi home dir `git clone https://github.com/sacconazzo/gpio-rpi-van-battery-stats.git`
+- install dep. with `yarn install` and `pip install -r requirements.txt`
 - create mysql server and database (you can use `docker-compose.yaml` in `/db` folder)
 - create table `battery-snaps` (you can create it running `yarn db:prepare`)
 - configure `.env` file like `.env.example`
