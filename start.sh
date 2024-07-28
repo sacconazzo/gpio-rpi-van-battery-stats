@@ -1,13 +1,13 @@
 #!/bin/bash
 
-cd /home/pi/gpio-rpi-van-battery-stats
+git checkout .
+git pull
 
-COLLECT=$(pgrep -f collect.py)
-if [ -z "$COLLECT" ]; then
-    sudo yarn collect &
-fi
+pip install -r requirements.txt
+yarn install
 
-MANAGER=$(pgrep -f manager.js)
-if [ -z "$MANAGER" ]; then
-    sudo yarn manager &
-fi
+sudo pkill python3
+sudo pkill node
+
+sudo yarn collect &
+sudo yarn manager &
