@@ -16,7 +16,7 @@
 ### Software
 
 - Pi OS (10 or later)
-- MySQL server 8 installed
+- MySQL server 8 installed (or docker compose)
 - Python3
 - NodeJS (12 or later)
 - A Web Server where to post the stats data (in this case `api.giona.tech`, you could comment this part if you want to work locally by directly querying the db)
