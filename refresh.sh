@@ -3,6 +3,7 @@
 git checkout .
 git pull
 
+pip install -r requirements.txt
 yarn install
 
 sudo pkill python3
