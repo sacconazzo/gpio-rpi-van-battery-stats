@@ -61,7 +61,6 @@ const share = async () => {
   pwmShare.hardwarePwmWrite(frequency, 20000);
 
   try {
-    let data;
     const system = {
       uptime: execSync("uptime").toString(),
       temp: Number(
@@ -120,18 +119,18 @@ const share = async () => {
       // LIMIT 500;
     );
 
-    data = {
+    app._data = {
       system,
       dayWeek,
       realtime,
     };
-    await axios.post("https://api.giona.tech/domotica/battery", data, {
+    await axios.post("https://api.giona.tech/domotica/battery", app._data, {
       headers: {
         "x-giona-tech": apiToken,
       },
     });
 
-    io.emit("data", data);
+    io.emit("data", app._data);
 
     console.log("stored data");
 
@@ -151,7 +150,7 @@ const share = async () => {
 cron.schedule(shareInterval, share);
 share();
 
-app.get("/data", (req, res) => res.json(data));
+app.get("/data", (req, res) => res.json(app._data));
 
 // BUTTONS
 if (process.env.ENABLE_BUTTONS === "true") {
