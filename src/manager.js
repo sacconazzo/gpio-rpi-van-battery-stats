@@ -4,6 +4,8 @@ const axios = require("axios");
 const winston = require("winston");
 const cron = require("node-cron");
 const Gpio = require("pigpio").Gpio;
+const http = require("http");
+const { Server } = require("socket.io");
 const { exec, execSync } = require("child_process");
 const db = require("./db");
 const telegram = require("./telegram");
@@ -50,6 +52,10 @@ const buttonShutDown = new Gpio(pinShutDown, {
 });
 
 // SHARE
+const server = http.createServer();
+const io = new Server(server);
+io.on("connection", () => {});
+
 const share = async () => {
   pwmShare.hardwarePwmWrite(frequency, 20000);
 
@@ -122,6 +128,8 @@ const share = async () => {
         "x-giona-tech": apiToken,
       },
     });
+
+    io.emit("data", data);
 
     console.log("stored data");
 
