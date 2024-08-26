@@ -5,6 +5,7 @@ const winston = require("winston");
 const cron = require("node-cron");
 const Gpio = require("pigpio").Gpio;
 const http = require("http");
+const app = require("express")();
 const { Server } = require("socket.io");
 const { exec, execSync } = require("child_process");
 const db = require("./db");
@@ -52,14 +53,15 @@ const buttonShutDown = new Gpio(pinShutDown, {
 });
 
 // SHARE
-const server = http.createServer();
+const server = http.createServer(app);
 const io = new Server(server);
-server.listen(3000, () => {});
+server.listen(3000);
 
 const share = async () => {
   pwmShare.hardwarePwmWrite(frequency, 20000);
 
   try {
+    let data;
     const system = {
       uptime: execSync("uptime").toString(),
       temp: Number(
@@ -118,7 +120,7 @@ const share = async () => {
       // LIMIT 500;
     );
 
-    const data = {
+    data = {
       system,
       dayWeek,
       realtime,
@@ -148,6 +150,8 @@ const share = async () => {
 
 cron.schedule(shareInterval, share);
 share();
+
+app.get("/data", (req, res) => res.json(data));
 
 // BUTTONS
 if (process.env.ENABLE_BUTTONS === "true") {
