@@ -54,7 +54,7 @@ const buttonShutDown = new Gpio(pinShutDown, {
 // SHARE
 const server = http.createServer();
 const io = new Server(server);
-io.on("connection", () => {});
+server.listen(3000, () => {});
 
 const share = async () => {
   pwmShare.hardwarePwmWrite(frequency, 20000);
