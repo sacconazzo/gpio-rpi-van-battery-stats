@@ -7,5 +7,5 @@ socket.on("connect", () => {
 });
 
 socket.on("data", (msg) => {
-  console.log("Received:", msg);
+  console.log("Received:", msg.system.uptime);
 });
