@@ -1,4 +1,4 @@
-const { conn, getSettingsVars } = require("../db");
+const db = require("../db");
 const ai = require("./ai");
 
 const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
@@ -62,7 +62,7 @@ const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
   console.log(`Current sensor recalibrate: ${JSON.stringify(data)}`);
 
   if (data && data.OFFSET_A1 > 0.2 && data.OFFSET_A2 > 0.2) {
-    const vars = await getSettingsVars();
+    const vars = await db.getSettingsVars();
 
     const baseA = Number(absorption) || vars["IDLE_A"];
     const offsetBaseA1 = baseA / 2 / (vars["VREF"] * vars["COEFF_A1"]);

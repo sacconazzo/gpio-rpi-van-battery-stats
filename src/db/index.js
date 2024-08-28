@@ -3,7 +3,7 @@ const connectionConfig = require("../../knexfile");
 
 const conn = knex(connectionConfig);
 
-const getSettingsVars = async () => {
+conn.getSettingsVars = async () => {
   const vars = await conn("settings");
 
   return vars.reduce((o, e) => {
@@ -12,8 +12,8 @@ const getSettingsVars = async () => {
   }, {});
 };
 
-conn.realTimeQuery = () =>
-  conn.raw(
+conn.realTime = async () => {
+  const [realtime] = await conn.raw(
     `SELECT\
     CONVERT_TZ(timestamp, 'UTC', '${process.env.DB_TIMEZONE}') as timestamp,\
     round(bm_voltage, 2) AS bmV,\
@@ -33,9 +33,11 @@ conn.realTimeQuery = () =>
     id ASC;`
     // LIMIT 500;
   );
+  return realtime;
+};
 
-conn.dayWeekQuery = () =>
-  conn.raw(
+conn.dayWeek = async () => {
+  const [dayweek] = await conn.raw(
     `SELECT\
       date(CONVERT_TZ(timestamp, 'UTC', '${process.env.DB_TIMEZONE}')) AS day,\
       round(avg(bm_voltage), 2) bmV,\
@@ -64,8 +66,7 @@ conn.dayWeekQuery = () =>
     GROUP BY\
       day;`
   );
-
-module.exports = {
-  conn,
-  getSettingsVars,
+  return dayweek;
 };
+
+module.exports = conn;
