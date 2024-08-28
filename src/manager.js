@@ -68,9 +68,9 @@ const share = async () => {
       ),
     };
 
-    const [dayWeek] = await db.conn.dayWeekQuery();
+    const dayWeek = await db.dayWeek();
 
-    const [realtime] = await db.conn.realTimeQuery();
+    const realtime = await db.realTime();
 
     app._data = {
       system,
@@ -104,10 +104,7 @@ const share = async () => {
 cron.schedule(shareInterval, share);
 share();
 
-app.get("/data", async (req, res) => {
-  const [realtime] = await db.conn.realTimeQuery();
-  res.json(realtime);
-});
+app.get("/data", async (req, res) => res.json(await db.realTime()));
 
 // BUTTONS
 if (process.env.ENABLE_BUTTONS === "true") {
