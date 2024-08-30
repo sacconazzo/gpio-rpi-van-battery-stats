@@ -15,7 +15,7 @@ const triggerSensorHost = process.env.TRIGGER_SENSOR_HOST;
 let startInterval;
 
 const shot = async ({ fileName, shutter }) => {
-  const [[{ lux }]] = await db.conn.raw(
+  const [[{ lux }]] = await db.raw(
     `SELECT\
       ch4 as lux\
     FROM\
