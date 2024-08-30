@@ -3,7 +3,7 @@ const ai = require("./ai");
 
 const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
   if (force) {
-    const [[spread]] = await conn.raw(
+    const [[spread]] = await db.raw(
       `select\
         min(b.b1_current) as A1_MIN,\
         min(b.b2_current) as A2_MIN,\
@@ -33,7 +33,7 @@ const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
     }
   }
 
-  const [[data]] = await conn.raw(
+  const [[data]] = await db.raw(
     `select\
     count(*) as snaps,
     truncate(avg(a.ch5), 4) as OFFSET_A1,\
@@ -71,14 +71,14 @@ const calibrate = async ({ force = true, tentative = 1, absorption } = {}) => {
     data.OFFSET_A1 = (data.OFFSET_A1 + offsetBaseA1).toFixed(4);
     data.OFFSET_A2 = (data.OFFSET_A2 + offsetBaseA2).toFixed(4);
 
-    await conn("settings")
+    await db("settings")
       .update({ value: data.OFFSET_A1 })
       .where({ key: "OFFSET_A1" });
-    await conn("settings")
+    await db("settings")
       .update({ value: data.OFFSET_A2 })
       .where({ key: "OFFSET_A2" });
 
-    await conn("calibrate-snaps").insert({
+    await db("calibrate-snaps").insert({
       temperature: data.TEMPERATURE,
       a1: data.OFFSET_A1,
       a2: data.OFFSET_A2,
@@ -96,14 +96,14 @@ const calibrateAI = async () => {
   console.log(`Current sensor recalibrate from AI: ${JSON.stringify(data)}`);
 
   if (data && data.OFFSET_A1 > 0.2 && data.OFFSET_A2 > 0.2) {
-    await conn("settings")
+    await db("settings")
       .update({ value: data.OFFSET_A1 })
       .where({ key: "OFFSET_A1" });
-    await conn("settings")
+    await db("settings")
       .update({ value: data.OFFSET_A2 })
       .where({ key: "OFFSET_A2" });
 
-    await conn("calibrate-snaps").insert({
+    await db("calibrate-snaps").insert({
       temperature: data.TEMPERATURE,
       a1: data.OFFSET_A1,
       a2: data.OFFSET_A2,
