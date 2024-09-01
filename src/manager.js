@@ -63,9 +63,13 @@ const share = async () => {
   try {
     const system = {
       uptime: execSync("uptime").toString(),
-      temp: Number(
-        execSync("vcgencmd measure_temp").toString().split("=")[1].split("'")[0]
-      ),
+      tempGpu: execSync("vcgencmd measure_temp")
+        .toString()
+        .split("=")[1]
+        .split("'")[0],
+      tempCpu: (
+        execSync("cat /sys/class/thermal/thermal_zone0/temp").toString() / 1000
+      ).toFixed(1),
     };
 
     const dayWeek = await db.dayWeek();
