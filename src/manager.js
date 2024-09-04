@@ -7,6 +7,7 @@ const Gpio = require("pigpio").Gpio;
 const http = require("http");
 const app = require("express")();
 const { Server } = require("socket.io");
+const mqtt = require("mqtt");
 const { exec, execSync } = require("child_process");
 const db = require("./db");
 const telegram = require("./telegram");
@@ -56,6 +57,10 @@ const buttonShutDown = new Gpio(pinShutDown, {
 const server = http.createServer(app);
 const io = new Server(server);
 server.listen(3000);
+const mqttClient = mqtt.connect(process.env.MQTT_HOST, {
+  username: process.env.MQTT_USERNAME,
+  password: process.env.MQTT_PASSWORD,
+});
 
 const share = async () => {
   pwmShare.hardwarePwmWrite(frequency, 20000);
@@ -89,6 +94,8 @@ const share = async () => {
     });
 
     io.emit("data", app._data);
+
+    client.publish("data", app._data, { qos: 1 });
 
     console.log("stored data");
 
