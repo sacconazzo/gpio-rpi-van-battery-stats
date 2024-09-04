@@ -95,7 +95,10 @@ const share = async () => {
 
     io.emit("data", app._data);
 
-    client.publish("data", app._data, { qos: 1, retain: true });
+    mqttClient.publish("data", JSON.stringify(app._data), {
+      qos: 1,
+      retain: true,
+    });
 
     console.log("stored data");
 
