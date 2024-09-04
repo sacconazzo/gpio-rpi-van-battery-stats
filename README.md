@@ -58,7 +58,16 @@ sudo yarn collect &
 sudo yarn manager &
 ```
 
-### Output generated example
+## Outputs
+
+Developed to provide updated data in 4 different stacks:
+
+- Publish to external REST/HTTP
+- Publish to MQTT
+- Expose with a REST/HTTP
+- Send with Socket.IO
+
+### Output managed example
 
 #### Realtime data
 
@@ -131,4 +140,4 @@ https://api.giona.tech/domotica/battery
 
 <img src="res/img/dashboard.png" alt="web app" width="100%" />
 
-https://sacconazzo.altervista.org/#battery
+https://app.giona.tech/#battery

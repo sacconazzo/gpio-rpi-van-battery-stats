@@ -1,6 +1,6 @@
 {
   "name": "gpio",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "description": "rpi battery signals",
   "scripts": {
     "db:prepare": "npx knex migrate:latest",
@@ -18,6 +18,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "knex": "0.15.2",
+    "mqtt": "^5.10.1",
     "mysql": "^2.18.1",
     "node-cron": "^3.0.3",
     "openai": "^4.49.0",
