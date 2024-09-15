@@ -93,9 +93,15 @@ const share = async () => {
       },
     });
 
-    io.emit("data", app._data);
+    app._dataFlat = {
+      system,
+      dayWeek: dayWeek[dayWeek.length - 1],
+      realtime: realtime[realtime.length - 1],
+    };
 
-    mqttClient.publish("data", JSON.stringify(app._data), {
+    io.emit("data", app._dataFlat);
+
+    mqttClient.publish("data", JSON.stringify(app._dataFlat), {
       qos: 1,
       retain: true,
     });
@@ -118,7 +124,7 @@ const share = async () => {
 cron.schedule(shareInterval, share);
 share();
 
-app.get("/data", async (req, res) => res.json(await db.realTime()));
+app.get("/data", (req, res) => res.json(app._dataFlat));
 
 // BUTTONS
 if (process.env.ENABLE_BUTTONS === "true") {
