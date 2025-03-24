@@ -41,7 +41,7 @@ const aai = async () => {
       },
     ],
     max_tokens: 60,
-    model: "gpt-4o",
+    model: "gpt-4o-mini",
   });
 
   const calibration =
