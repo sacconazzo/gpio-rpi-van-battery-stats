@@ -1,8 +1,9 @@
 const db = require("../db");
-const OpenAIApi = require("openai");
+const axios = require("axios");
+// const OpenAIApi = require("openai");
 
-const apiKey = process.env.OPENAI_API_KEY;
-const openai = new OpenAIApi.OpenAI({ key: apiKey });
+// const apiKey = process.env.OPENAI_API_KEY;
+// const openai = new OpenAIApi.OpenAI({ key: apiKey });
 
 const aai = async () => {
   const [signals] = await db.raw(
@@ -16,7 +17,9 @@ const aai = async () => {
       id ASC;`
   );
 
-  const completion = await openai.chat.completions.create({
+  // const completion = await openai.chat.completions.create({
+  const body = {
+    model: "llama3.2:1b",
     messages: [
       {
         role: "system",
@@ -36,19 +39,33 @@ const aai = async () => {
           "la risposta deve essere 2 valori numerici semplici separati da virgola e nient'altro che rappresentino ch5 e ch6. Se non ricevi i valori di riferimento o non sei in grado di rispondere perchè non hai dati sufficienti, rispondi con 0",
       },
       {
-        role: "assistant",
+        role: "user",
         content: JSON.stringify(signals),
       },
     ],
-    max_tokens: 60,
-    model: "gpt-4o-mini",
+    stream: false,
+    options: {
+      temperature: 0.1,
+      num_predict: 60,
+    },
+  };
+
+  const response = await axios.post("http://localhost:11434/api/chat", body, {
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
+  console.log(`LLM response: ${JSON.stringify(response?.data?.message)}`);
+
   const calibration =
-    completion.choices[0]?.message?.content &&
-    completion.choices[0].message.content.includes(",")
-      ? completion.choices[0].message.content.split(",")
+    response?.data?.message?.content?.length > 3
+      ? JSON.parse(response.data.message.content).split(",")
       : [];
+  // completion.choices[0]?.message?.content &&
+  // completion.choices[0].message.content.includes(",")
+  //   ? completion.choices[0].message.content.split(",")
+  //   : [];
 
   return {
     OFFSET_A1: calibration[0] ? Number(calibration[0]).toFixed(4) : undefined,
