@@ -51,6 +51,8 @@ const aai = async () => {
       },
     };
 
+    console.log(`LLM request: ${JSON.stringify(body)}`);
+
     const response = await axios.post("http://localhost:11434/api/chat", body, {
       headers: {
         "Content-Type": "application/json",
