@@ -63,7 +63,7 @@ const aai = async () => {
 
     const calibration =
       response?.data?.message?.content?.length > 3
-        ? JSON.parse(response.data.message.content).split(",")
+        ? JSON.parse(response.data.message.content)
         : [];
     // completion.choices[0]?.message?.content &&
     // completion.choices[0].message.content.includes(",")
