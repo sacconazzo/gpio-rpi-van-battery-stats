@@ -13,7 +13,7 @@ const aai = async () => {
     FROM\
     \`adc-snaps\`\
     WHERE\
-      timestamp> (NOW() - INTERVAL ${process.env.REALTIME_MINUTES} MINUTE)\
+      timestamp> (NOW() - INTERVAL ${process.env.AI_MINUTES} MINUTE)\
     ORDER BY\
       id ASC;`
     );
