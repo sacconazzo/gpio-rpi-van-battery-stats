@@ -47,12 +47,14 @@ bot.command("c", async (ctx) => {
 
     const absorption = ctx.message.text.split(" ")[1] || undefined;
 
-    const setup = isNaN(absorption)
+    const ai = isNaN(absorption);
+
+    const setup = ai
       ? await events.onCalibrateAIRequest()
       : await events.onCalibrateRequest({ absorption });
 
     await ctx.reply(
-      `Current sensor recalibrate:\n${
+      `Current sensor recalibrate param ${ai ? `from AI` : absorption}:\n${
         setup ? JSON.stringify(setup) : "not enough data"
       }`
     );
