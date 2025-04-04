@@ -31,13 +31,14 @@ const aai = async () => {
         {
           role: "user",
           content:
-            "Ti fornirò un array in formato stringificato, avrà 2 campi, ch5 e ch6, rappresentano il valore grezzo ottenuto dei 2 sensori di corrente collegato rispettivamente a 2 batterie. " +
+            "Ti fornirò un array in formato stringificato, avrà 2 campi, ch5 e ch6, rappresentano il valore grezzo ottenuto dai 2 sensori di corrente collegati rispettivamente a 2 batterie. " +
             // "Il campo ch7 è solo un dettaglio aggiuntivo, il valore grazzo da un termistore per quel determinato snapshot, la temperatura potrebbe influire con i valori dei sensori di corrente. " +
             "Uno snapshot ogni 20 secondi. l'ultimo elemento il più recente. " +
-            "In linea teorica un valore a 0.5 indica che non c'è flusso di corrente, mentre spostandosi da quel valore potrebbe esserci assorbimento o ricarica. " +
-            "I sensori sono collegati a 2 batterie al litio in un van e a pannello solare che potrebbe caricare o meno dipende dal sole e dallo stato di ricarica, le batterie sono anche collegati ai servizi del van. " +
-            "Tendenzialmente i sensori subiscono un offset dal valore teorico di 0.5 e quindi, in fase di riposo, senza assorbimento o carica, il segnale che si riceve potrebbe non essere esattamente 0.5. " +
-            "Ho necessità che tu mi analizzi gli array di valori e mi fornisci il valore più plausibile vicino a 0.5 ricalibrato considerando possibile offset rispettivamente per entrambi i 2 set: ch5 e ch6. " +
+            "In linea teorica un valore a 0.5 indica che non c'è flusso di corrente, mentre discostando da quel valore significa che c'è assorbimento o ricarica. " +
+            "Ipoteticamente: 0.6 significa ricarica di 10A; 0.4 assorbimento di 10A; 0.5, flusso di corrente di 0A. " +
+            "I sensori sono collegati a 2 batterie al litio in un van e a pannello solare che potrebbe caricare o meno dipende dal sole e dallo stato di ricarica, le batterie sono anche collegate ai servizi del van. " +
+            "Tendenzialmente i sensori subiscono un offset dal valore teorico di 0.5 ad assorbimento 0A e quindi, in fase di riposo, senza assorbimento o carica, il segnale che si riceve potrebbe non essere esattamente 0.5. " +
+            "Ho necessità che tu mi analizzi gli array di valori e mi fornisca il valore più plausibile per indicare assorbimento 0A (mi aspetto circa 0.5 e compreso tra 0 e 1) ricalibrato considerando possibile offset, rispettivamente per entrambi i 2 set: ch5 e ch6. " +
             "Se non ricevi i valori di riferimento o non sei in grado di rispondere perchè non hai dati sufficienti, rispondi con 0",
         },
         {
