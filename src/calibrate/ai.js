@@ -1,9 +1,11 @@
 const db = require("../db");
-const axios = require("axios");
-// const OpenAIApi = require("openai");
 
+// const OpenAIApi = require("openai");
 // const apiKey = process.env.OPENAI_API_KEY;
 // const openai = new OpenAIApi.OpenAI({ key: apiKey });
+
+const axios = require("axios");
+const LLM_URL = "http://localhost:11434/api/chat";
 
 const aai = async () => {
   try {
@@ -18,7 +20,6 @@ const aai = async () => {
       id ASC;`
     );
 
-    // const completion = await openai.chat.completions.create({
     const body = {
       model: "llama3.2:1b",
       messages: [
@@ -51,13 +52,11 @@ const aai = async () => {
       },
     };
 
+    // const completion = await openai.chat.completions.create(...)
+
     console.log(`LLM request: ${JSON.stringify(body)}`);
 
-    const response = await axios.post("http://localhost:11434/api/chat", body, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.post(LLM_URL, body);
 
     console.log(`LLM response: ${JSON.stringify(response?.data?.message)}`);
 
