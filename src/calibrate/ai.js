@@ -46,9 +46,21 @@ const aai = async () => {
         },
       ],
       stream: false,
+      format: {
+        type: "object",
+        properties: {
+          ch5: {
+            type: "number",
+          },
+          ch6: {
+            type: "number",
+          },
+        },
+        required: ["ch5", "ch6"],
+      },
       options: {
-        temperature: 0.1,
-        num_predict: 60,
+        temperature: 0,
+        // num_predict: 60,
       },
     };
 
@@ -70,8 +82,8 @@ const aai = async () => {
     //   : [];
 
     return {
-      OFFSET_A1: calibration[0] ? Number(calibration[0]).toFixed(4) : undefined,
-      OFFSET_A2: calibration[1] ? Number(calibration[1]).toFixed(4) : undefined,
+      OFFSET_A1: calibration ? Number(calibration.ch5).toFixed(4) : undefined,
+      OFFSET_A2: calibration ? Number(calibration.ch6).toFixed(4) : undefined,
     };
   } catch (e) {
     console.log(e.message);
