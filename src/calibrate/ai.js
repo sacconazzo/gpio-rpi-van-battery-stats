@@ -21,7 +21,7 @@ const aai = async () => {
     );
 
     const body = {
-      model: "llama3.2:1b",
+      model: "gemma3:1b",
       messages: [
         {
           role: "system",
