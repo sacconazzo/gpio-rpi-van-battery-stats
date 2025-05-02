@@ -63,7 +63,7 @@ bot.command("c", async (ctx) => {
   }
 });
 
-bot.command("shoot", async (ctx) => {
+bot.command("shot", async (ctx) => {
   try {
     const shutter = ctx.message.text.split(" ")[1];
 
