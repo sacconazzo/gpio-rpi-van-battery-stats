@@ -33,7 +33,7 @@ const shot = async ({ fileName, shutter }) => {
   };
 
   execSync(
-    `libcamera-still -o ${fileName} --width 2028 --height 1520 ${opt()} --immediate`
+    `rpicam-still -o ${fileName} --width 2028 --height 1520 ${opt()} --immediate`
   );
 };
 

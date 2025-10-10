@@ -1,6 +1,6 @@
 {
   "name": "gpio",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "rpi battery signals",
   "scripts": {
     "db:prepare": "npx knex migrate:latest",
