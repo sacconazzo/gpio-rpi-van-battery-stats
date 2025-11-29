@@ -26,9 +26,9 @@ conn.realTime = async () => {
   \`battery-snaps\`\
   WHERE\
     timestamp> (NOW() - INTERVAL ${process.env.REALTIME_MINUTES} MINUTE)\
-    and b1_voltage > 9\
-    and b2_voltage > 9\
-    and bm_voltage > 9\
+    and b1_voltage > 7\
+    and b2_voltage > 7\
+    and bm_voltage > 7\
   ORDER BY\
     id ASC;`
     // LIMIT 500;
@@ -60,9 +60,9 @@ conn.dayWeek = async () => {
       \`battery-snaps\`\
     WHERE\
       date(timestamp)> (NOW() - INTERVAL 14 DAY)\
-      and b1_voltage > 9\
-      and b2_voltage > 9\
-      and bm_voltage > 9\
+      and b1_voltage > 7\
+      and b2_voltage > 7\
+      and bm_voltage > 7\
     GROUP BY\
       day;`
   );
