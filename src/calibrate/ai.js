@@ -73,14 +73,16 @@ const aai = async () => {
 
     console.log(`LLM response: ${JSON.stringify(response?.data?.message)}`);
 
-    const calibration =
+    const calibrationData =
       response?.data?.message?.content?.length > 3
         ? JSON.parse(response.data.message.content)
-        : [];
+        : null;
     // completion.choices[0]?.message?.content &&
     // completion.choices[0].message.content.includes(",")
     //   ? completion.choices[0].message.content.split(",")
     //   : [];
+
+    const calibration = Array.isArray(calibrationData) ? calibrationData[0] : calibrationData;
 
     return {
       OFFSET_A1: calibration ? Number(calibration.ch5).toFixed(4) : undefined,
